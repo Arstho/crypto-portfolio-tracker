@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
+import App from '../App';
 import { CoinDetailsPage } from '../pages/CoinDetails/CoinDetailsPage';
 import { HomePage } from '../pages/Home/HomePage';
-import App from './App';
 
 export const router = createBrowserRouter([
   {

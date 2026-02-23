@@ -5,10 +5,12 @@ import {
   useSelector,
 } from 'react-redux';
 import { cryptoApi } from '../features/crypto/cryptoApi';
+import portfolioReducer from '../features/portfolio/portfolioSlice';
 
 export const store = configureStore({
   reducer: {
     [cryptoApi.reducerPath]: cryptoApi.reducer,
+    portfolio: portfolioReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(cryptoApi.middleware),

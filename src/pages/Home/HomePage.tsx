@@ -41,7 +41,7 @@ export const HomePage: React.FC = () => {
         }
       });
     }
-  }, [coins]);
+  }, [chartDataMap, coins]);
 
   const filteredCoins = useMemo(() => {
     if (!coins) return [];
