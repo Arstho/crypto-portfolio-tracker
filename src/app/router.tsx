@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { CoinDetailsPage } from '../pages/CoinDetails/CoinDetailsPage';
 import { HomePage } from '../pages/Home/HomePage';
 import App from './App';
 
@@ -13,7 +14,11 @@ export const router = createBrowserRouter([
       },
       {
         path: '/coin/:id',
-        element: <div>Coin Details Page (Coming Soon)</div>,
+        element: <CoinDetailsPage />,
+      },
+      {
+        path: '/portfolio',
+        element: <div>Portfolio Page (Coming Soon)</div>,
       },
     ],
   },

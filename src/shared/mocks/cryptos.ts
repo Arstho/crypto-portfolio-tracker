@@ -256,7 +256,12 @@ export const getMockCoinDetail = (id: string): CoinDetail | undefined => {
     ...coin,
     description: `${coin.name} is one of the leading cryptocurrencies in the market. It has a strong community and innovative technology that aims to revolutionize the financial industry. The project focuses on decentralization, security, and scalability.`,
     homepage: `https://${coin.name.toLowerCase().replace(' ', '')}.org`,
-    github: `https://github.com/${coin.name.toLowerCase().replace(' ', '')}`,
+    github:
+      coin.id === 'bitcoin'
+        ? 'https://github.com/bitcoin/bitcoin'
+        : coin.id === 'ethereum'
+          ? 'https://github.com/ethereum'
+          : '',
     price_change_percentage_1h: Math.random() * 6 - 3, // -3% to +3%
     price_change_percentage_7d: Math.random() * 20 - 10, // -10% to +10%
     price_change_percentage_30d: Math.random() * 40 - 20, // -20% to +20%

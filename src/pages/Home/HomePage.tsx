@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MiniChart } from '../../features/charts/MiniChart';
 import { useGetCoinsQuery } from '../../features/crypto/cryptoApi';
 import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage';
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
@@ -10,12 +11,16 @@ import { PriceChange } from '../../shared/components/PriceChange/PriceChange';
 import { SearchInput } from '../../shared/components/SearchInput/SearchInput';
 import { Table } from '../../shared/components/Table/Table';
 import type { Coin } from '../../shared/mocks/cryptos';
+import { getMockChartData } from '../../shared/mocks/cryptos';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 500);
+  const [chartDataMap, setChartDataMap] = useState<
+    Record<string, [number, number][]>
+  >({});
 
   const {
     data: coins,
@@ -26,6 +31,17 @@ export const HomePage: React.FC = () => {
     page,
     perPage: 20,
   });
+
+  useEffect(() => {
+    if (coins) {
+      coins.forEach((coin) => {
+        if (!chartDataMap[coin.id]) {
+          const data = getMockChartData(coin.id, 7);
+          setChartDataMap((prev) => ({ ...prev, [coin.id]: data.prices }));
+        }
+      });
+    }
+  }, [coins]);
 
   const filteredCoins = useMemo(() => {
     if (!coins) return [];
@@ -46,6 +62,17 @@ export const HomePage: React.FC = () => {
   } = useSort(filteredCoins);
 
   const columns = [
+    {
+      key: 'chart',
+      header: 'Last 7d',
+      render: (coin: Coin) =>
+        chartDataMap[coin.id] ? (
+          <MiniChart
+            data={chartDataMap[coin.id]}
+            isPositive={coin.price_change_percentage_24h >= 0}
+          />
+        ) : null,
+    },
     {
       key: 'market_cap_rank',
       header: '#',
