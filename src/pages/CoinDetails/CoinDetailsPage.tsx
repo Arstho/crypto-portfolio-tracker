@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PriceChart } from '../../features/charts/PriceChart';
 import {
-  type TimePeriod,
   TimePeriodSelector,
+  type TimePeriod,
 } from '../../features/charts/TimePeriodSelector';
 import {
   useGetCoinByIdQuery,
   useGetCoinHistoryQuery,
 } from '../../features/crypto/cryptoApi';
+import { AddToPortfolioModal } from '../../features/portfolio/components/AddToPortfolioModal';
 import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage';
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
 import { LoadingSpinner } from '../../shared/components/LoadingSpinner/LoadingSpinner';
@@ -18,6 +19,7 @@ export const CoinDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [period, setPeriod] = useState<TimePeriod>('30');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     data: coin,
@@ -96,27 +98,25 @@ export const CoinDetailsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div>
-              <div className="text-sm text-gray-500">Market Cap</div>
-              <div className="font-semibold">
-                <FormatPrice value={coin.market_cap} />
-              </div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Volume (24h)</div>
-              <div className="font-semibold">
-                <FormatPrice value={coin.total_volume} />
-              </div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Circulating Supply</div>
-              <div className="font-semibold">
-                {coin.circulating_supply.toLocaleString()}{' '}
-                {coin.symbol.toUpperCase()}
-              </div>
-            </div>
-          </div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Add to Portfolio
+          </button>
         </div>
       </div>
 
@@ -148,7 +148,6 @@ export const CoinDetailsPage: React.FC = () => {
           <p className="text-gray-600 leading-relaxed">{coin.description}</p>
         </div>
 
-        {/* Статистика */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Statistics
@@ -241,6 +240,12 @@ export const CoinDetailsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <AddToPortfolioModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        coin={coin}
+      />
     </div>
   );
 };
