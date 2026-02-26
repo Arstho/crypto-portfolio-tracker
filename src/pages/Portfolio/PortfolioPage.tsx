@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PortfolioPieChart } from '../../features/charts/PortfolioPieChart';
 import { SellCoinModal } from '../../features/portfolio/components/SellCoinModal';
 import { usePortfolio } from '../../features/portfolio/hooks/usePortfolio';
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
@@ -22,6 +23,13 @@ export const PortfolioPage: React.FC = () => {
               <Skeleton className="h-8 w-32" />
             </div>
           ))}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <Skeleton className="h-6 w-48 mb-4" />
+          <div className="h-[400px] flex items-center justify-center">
+            <Skeleton className="w-[300px] h-[300px] rounded-full" />
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6">
@@ -154,6 +162,8 @@ export const PortfolioPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      <PortfolioPieChart data={stats.diversification} />
 
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
