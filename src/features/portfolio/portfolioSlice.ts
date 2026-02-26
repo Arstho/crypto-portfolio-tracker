@@ -4,17 +4,23 @@ import {
   type PayloadAction,
 } from '@reduxjs/toolkit';
 import { mockCoins } from '../../shared/mocks/cryptos';
-import { type PortfolioItem, type PortfolioStats } from './types';
+import type { PortfolioItem, PortfolioStats, Transaction } from './types';
 
 interface PortfolioState {
-  items: PortfolioItem[];
+  transactions: Transaction[];
   loading: boolean;
   error: string | null;
 }
 
-const loadFromLocalStorage = (): PortfolioItem[] => {
+interface Performer {
+  coinId: string;
+  coinName: string;
+  profitLossPercentage: number;
+}
+
+const loadFromLocalStorage = (): Transaction[] => {
   try {
-    const saved = localStorage.getItem('portfolio');
+    const saved = localStorage.getItem('portfolioTransactions');
     return saved ? JSON.parse(saved) : [];
   } catch {
     return [];
@@ -22,7 +28,7 @@ const loadFromLocalStorage = (): PortfolioItem[] => {
 };
 
 const initialState: PortfolioState = {
-  items: loadFromLocalStorage(),
+  transactions: loadFromLocalStorage(),
   loading: false,
   error: null,
 };
@@ -31,49 +37,88 @@ const portfolioSlice = createSlice({
   name: 'portfolio',
   initialState,
   reducers: {
-    addPortfolioItem: (
+    addTransaction: (
       state,
-      action: PayloadAction<Omit<PortfolioItem, 'id' | 'totalSpent'>>
+      action: PayloadAction<Omit<Transaction, 'id' | 'total'>>
     ) => {
-      const newItem: PortfolioItem = {
+      const newTransaction: Transaction = {
         ...action.payload,
         id: crypto.randomUUID(),
-        totalSpent: action.payload.amount * action.payload.purchasePrice,
+        total: action.payload.amount * action.payload.price,
       };
 
-      state.items.push(newItem);
+      state.transactions.push(newTransaction);
 
-      localStorage.setItem('portfolio', JSON.stringify(state.items));
+      if (action.payload.type === 'sell') {
+        const coinTransactions = state.transactions.filter(
+          (t) => t.coinId === action.payload.coinId
+        );
+
+        const totalBought = coinTransactions
+          .filter((t) => t.type === 'buy')
+          .reduce((sum, t) => sum + t.amount, 0);
+
+        const totalSold = coinTransactions
+          .filter((t) => t.type === 'sell')
+          .reduce((sum, t) => sum + t.amount, 0);
+
+        if (totalSold > totalBought) {
+          state.error = 'Cannot sell more than you own';
+          state.transactions = state.transactions.filter(
+            (t) => t.id !== newTransaction.id
+          );
+          return;
+        }
+      }
+
+      localStorage.setItem(
+        'portfolioTransactions',
+        JSON.stringify(state.transactions)
+      );
+      state.error = null;
     },
 
-    removePortfolioItem: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
-      localStorage.setItem('portfolio', JSON.stringify(state.items));
+    removeTransaction: (state, action: PayloadAction<string>) => {
+      state.transactions = state.transactions.filter(
+        (t) => t.id !== action.payload
+      );
+      localStorage.setItem(
+        'portfolioTransactions',
+        JSON.stringify(state.transactions)
+      );
     },
 
-    updatePortfolioItem: (
+    updateTransaction: (
       state,
-      action: PayloadAction<{ id: string; updates: Partial<PortfolioItem> }>
+      action: PayloadAction<{ id: string; updates: Partial<Transaction> }>
     ) => {
-      const index = state.items.findIndex(
-        (item) => item.id === action.payload.id
+      const index = state.transactions.findIndex(
+        (t) => t.id === action.payload.id
       );
       if (index !== -1) {
-        state.items[index] = {
-          ...state.items[index],
+        const transaction = state.transactions[index];
+        const updatedTransaction = {
+          ...transaction,
           ...action.payload.updates,
-          totalSpent:
-            (action.payload.updates.amount || state.items[index].amount) *
-            (action.payload.updates.purchasePrice ||
-              state.items[index].purchasePrice),
         };
-        localStorage.setItem('portfolio', JSON.stringify(state.items));
+
+        if (action.payload.updates.amount || action.payload.updates.price) {
+          updatedTransaction.total =
+            (action.payload.updates.amount || transaction.amount) *
+            (action.payload.updates.price || transaction.price);
+        }
+
+        state.transactions[index] = updatedTransaction;
+        localStorage.setItem(
+          'portfolioTransactions',
+          JSON.stringify(state.transactions)
+        );
       }
     },
 
-    clearPortfolio: (state) => {
-      state.items = [];
-      localStorage.removeItem('portfolio');
+    clearAllTransactions: (state) => {
+      state.transactions = [];
+      localStorage.removeItem('portfolioTransactions');
     },
 
     setError: (state, action: PayloadAction<string>) => {
@@ -86,104 +131,175 @@ const portfolioSlice = createSlice({
   },
 });
 
-export const selectPortfolioItems = (state: { portfolio: PortfolioState }) =>
-  state.portfolio.items;
-
-export const selectPortfolioLoading = (state: { portfolio: PortfolioState }) =>
-  state.portfolio.loading;
+export const selectTransactions = (state: { portfolio: PortfolioState }) =>
+  state.portfolio.transactions;
 
 export const selectPortfolioError = (state: { portfolio: PortfolioState }) =>
   state.portfolio.error;
 
+export const selectPortfolioItems = createSelector(
+  [selectTransactions],
+  (transactions): PortfolioItem[] => {
+    const itemsMap = new Map<string, PortfolioItem>();
+
+    transactions.forEach((transaction) => {
+      if (!itemsMap.has(transaction.coinId)) {
+        itemsMap.set(transaction.coinId, {
+          coinId: transaction.coinId,
+          coinName: transaction.coinName,
+          coinSymbol: transaction.coinSymbol,
+          coinImage: transaction.coinImage,
+          totalAmount: 0,
+          transactions: [],
+        });
+      }
+
+      const item = itemsMap.get(transaction.coinId)!;
+      item.transactions.push(transaction);
+
+      if (transaction.type === 'buy') {
+        item.totalAmount += transaction.amount;
+      } else {
+        item.totalAmount -= transaction.amount;
+      }
+    });
+
+    return Array.from(itemsMap.values()).filter((item) => item.totalAmount > 0);
+  }
+);
+
 export const selectPortfolioStats = createSelector(
-  [selectPortfolioItems, (_, coins: typeof mockCoins) => coins],
-  (items, coins): PortfolioStats => {
-    if (items.length === 0) {
+  [
+    selectTransactions,
+    selectPortfolioItems,
+    (_, coins: typeof mockCoins) => coins,
+  ],
+  (transactions, items, coins): PortfolioStats => {
+    if (transactions.length === 0) {
       return {
         totalInvested: 0,
+        totalSold: 0,
         totalCurrentValue: 0,
         totalProfitLoss: 0,
         totalProfitLossPercentage: 0,
+        realizedProfitLoss: 0,
+        unrealizedProfitLoss: 0,
         topPerformer: null,
         worstPerformer: null,
         diversification: [],
       };
     }
 
-    const coinGroups = items.reduce(
-      (acc, item) => {
-        const coin = coins.find((c) => c.id === item.coinId);
-        const currentPrice = coin?.current_price || 0;
+    const coinStats = new Map();
 
-        if (!acc[item.coinId]) {
-          acc[item.coinId] = {
-            coinId: item.coinId,
-            coinName: item.coinName,
-            coinSymbol: item.coinSymbol,
-            totalAmount: 0,
-            totalInvested: 0,
-            currentPrice,
-            transactions: [],
-          };
+    transactions.forEach((t) => {
+      if (!coinStats.has(t.coinId)) {
+        coinStats.set(t.coinId, {
+          buys: [] as { amount: number; price: number; date: string }[],
+          totalBought: 0,
+          totalSpent: 0,
+          totalSoldAmount: 0,
+          totalReceived: 0,
+        });
+      }
+
+      const stats = coinStats.get(t.coinId);
+
+      if (t.type === 'buy') {
+        stats.buys.push({ amount: t.amount, price: t.price, date: t.date });
+        stats.totalBought += t.amount;
+        stats.totalSpent += t.total;
+      } else {
+        stats.totalSoldAmount += t.amount;
+        stats.totalReceived += t.total;
+
+        let remainingToSell = t.amount;
+        let costOfSold = 0;
+
+        while (remainingToSell > 0 && stats.buys.length > 0) {
+          const oldestBuy = stats.buys[0];
+          const sellAmount = Math.min(remainingToSell, oldestBuy.amount);
+
+          costOfSold += sellAmount * oldestBuy.price;
+          oldestBuy.amount -= sellAmount;
+          remainingToSell -= sellAmount;
+
+          if (oldestBuy.amount === 0) {
+            stats.buys.shift();
+          }
         }
 
-        acc[item.coinId].totalAmount += item.amount;
-        acc[item.coinId].totalInvested += item.totalSpent;
-        acc[item.coinId].transactions.push(item);
-
-        return acc;
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {} as Record<string, any>
-    );
+        stats.realizedProfit =
+          (stats.realizedProfit || 0) + (t.total - costOfSold);
+      }
+    });
 
     let totalInvested = 0;
     let totalCurrentValue = 0;
-    const performers: {
+    let totalRealizedProfit = 0;
+    const performers: Performer[] = [];
+    const diversification: {
       coinId: string;
       coinName: string;
-      profitLossPercentage: number;
+      percentage: number;
+      value: number;
     }[] = [];
-    const diversification = [];
 
-    for (const [coinId, group] of Object.entries(coinGroups)) {
-      const currentValue = group.totalAmount * group.currentPrice;
-      totalInvested += group.totalInvested;
+    items.forEach((item) => {
+      const coin = coins.find((c) => c.id === item.coinId);
+      const currentPrice = coin?.current_price || 0;
+      const currentValue = item.totalAmount * currentPrice;
+
+      const stats = coinStats.get(item.coinId);
+      const remainingCost =
+        stats?.buys.reduce(
+          (sum: number, buy: { amount: number; price: number }) =>
+            sum + buy.amount * buy.price,
+          0
+        ) || 0;
+
+      totalInvested += remainingCost;
       totalCurrentValue += currentValue;
+      totalRealizedProfit += stats?.realizedProfit || 0;
 
-      const profitLossPercentage =
-        group.totalInvested > 0
-          ? ((currentValue - group.totalInvested) / group.totalInvested) * 100
-          : 0;
+      const unrealizedProfit = currentValue - remainingCost;
+      const totalProfitLoss = (stats?.realizedProfit || 0) + unrealizedProfit;
+      const totalProfitLossPercentage =
+        remainingCost > 0 ? (totalProfitLoss / remainingCost) * 100 : 0;
 
       performers.push({
-        coinId,
-        coinName: group.coinName,
-        profitLossPercentage,
+        coinId: item.coinId,
+        coinName: item.coinName,
+        profitLossPercentage: totalProfitLossPercentage,
       });
 
       diversification.push({
-        coinId,
-        coinName: group.coinName,
+        coinId: item.coinId,
+        coinName: item.coinName,
         percentage:
           totalCurrentValue > 0 ? (currentValue / totalCurrentValue) * 100 : 0,
         value: currentValue,
       });
-    }
+    });
 
     performers.sort((a, b) => b.profitLossPercentage - a.profitLossPercentage);
+    diversification.sort((a, b) => b.percentage - a.percentage);
 
-    const totalProfitLoss = totalCurrentValue - totalInvested;
+    const totalProfitLoss =
+      totalCurrentValue - totalInvested + totalRealizedProfit;
     const totalProfitLossPercentage =
       totalInvested > 0 ? (totalProfitLoss / totalInvested) * 100 : 0;
 
-    diversification.sort((a, b) => b.percentage - a.percentage);
-
     return {
       totalInvested,
+      totalSold: transactions
+        .filter((t) => t.type === 'sell')
+        .reduce((sum, t) => sum + t.total, 0),
       totalCurrentValue,
       totalProfitLoss,
       totalProfitLossPercentage,
+      realizedProfitLoss: totalRealizedProfit,
+      unrealizedProfitLoss: totalCurrentValue - totalInvested,
       topPerformer: performers[0] || null,
       worstPerformer: performers[performers.length - 1] || null,
       diversification,
@@ -197,27 +313,42 @@ export const selectPortfolioWithCurrentPrices = createSelector(
     return items.map((item) => {
       const coin = coins.find((c) => c.id === item.coinId);
       const currentPrice = coin?.current_price || 0;
-      const currentValue = item.amount * currentPrice;
-      const profitLoss = currentValue - item.totalSpent;
+      const currentValue = item.totalAmount * currentPrice;
+
+      const buys = item.transactions.filter((t) => t.type === 'buy');
+      const totalSpent = buys.reduce((sum, t) => sum + t.total, 0);
+      const totalBought = buys.reduce((sum, t) => sum + t.amount, 0);
+      const avgBuyPrice = totalBought > 0 ? totalSpent / totalBought : 0;
+
+      const profitLoss = currentValue - totalSpent;
       const profitLossPercentage =
-        item.totalSpent > 0 ? (profitLoss / item.totalSpent) * 100 : 0;
+        totalSpent > 0 ? (profitLoss / totalSpent) * 100 : 0;
 
       return {
         ...item,
+        avgBuyPrice,
         currentPrice,
         currentValue,
         profitLoss,
         profitLossPercentage,
+        totalSpent,
       };
     });
   }
 );
 
+export const selectCoinTransactions = (coinId: string) =>
+  createSelector([selectTransactions], (transactions) =>
+    transactions
+      .filter((t) => t.coinId === coinId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  );
+
 export const {
-  addPortfolioItem,
-  removePortfolioItem,
-  updatePortfolioItem,
-  clearPortfolio,
+  addTransaction,
+  removeTransaction,
+  updateTransaction,
+  clearAllTransactions,
   setError,
   clearError,
 } = portfolioSlice.actions;

@@ -14,6 +14,7 @@ import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
 import { LoadingSpinner } from '../../shared/components/LoadingSpinner/LoadingSpinner';
 import { PriceChange } from '../../shared/components/PriceChange/PriceChange';
+import { Skeleton } from '../../shared/components/Skeleton/Skeleton';
 
 export const CoinDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,8 +35,27 @@ export const CoinDetailsPage: React.FC = () => {
 
   if (isLoadingCoin) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner size="lg" />
+      <div className="space-y-8">
+        <Skeleton className="h-5 w-24" />
+
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center gap-6">
+            <Skeleton className="h-16 w-16 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <div className="ml-auto space-y-2">
+              <Skeleton className="h-10 w-36" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <Skeleton className="h-8 w-32 mb-4" />
+          <Skeleton className="h-[400px] w-full" />
+        </div>
       </div>
     );
   }

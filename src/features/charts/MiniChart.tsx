@@ -7,7 +7,7 @@ interface MiniChartProps {
 }
 
 export const MiniChart: React.FC<MiniChartProps> = ({ data, isPositive }) => {
-  const chartData = data.map(([timestamp, price]) => ({
+  const chartData = data.map(([, price]) => ({
     price,
   }));
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FormatPrice } from '../../../shared/components/FormatPrice/FormatPrice';
 import { Modal } from '../../../shared/components/Modal/Modal';
-import type { Coin } from '../../../shared/mocks/cryptos';
+import type { Coin } from '../../../shared/types/coinGecko';
 import { usePortfolio } from '../hooks/usePortfolio';
 
 interface AddToPortfolioModalProps {
@@ -15,7 +15,7 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
   onClose,
   coin,
 }) => {
-  const { addItem, error, clearError } = usePortfolio();
+  const { buyCoin, error, clearError } = usePortfolio();
 
   const [amount, setAmount] = useState<string>('');
   const [purchasePrice, setPurchasePrice] = useState<string>(
@@ -32,7 +32,7 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
     const numAmount = parseFloat(amount);
     const numPrice = parseFloat(purchasePrice);
 
-    addItem(
+    const success = buyCoin(
       coin.id,
       coin.name,
       coin.symbol,
@@ -43,14 +43,18 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
       notes
     );
 
-    setAmount('');
-    setPurchasePrice(coin.current_price.toString());
-    setPurchaseDate(new Date().toISOString().split('T')[0]);
-    setNotes('');
-    onClose();
+    if (success) {
+      setAmount('');
+      setPurchasePrice(coin.current_price.toString());
+      setPurchaseDate(new Date().toISOString().split('T')[0]);
+      setNotes('');
+      onClose();
+    }
   };
 
-  const totalSpent = parseFloat(amount) * parseFloat(purchasePrice);
+  const numAmount = parseFloat(amount) || 0;
+  const numPrice = parseFloat(purchasePrice) || 0;
+  const totalSpent = numAmount * numPrice;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Buy ${coin.name}`}>
@@ -149,14 +153,21 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
           />
         </div>
 
-        {amount && purchasePrice && (
-          <div className="p-3 bg-blue-50 rounded-lg">
-            <div className="text-sm text-blue-600 mb-1">Total Spent:</div>
-            <div className="text-xl font-bold text-blue-700">
-              <FormatPrice value={totalSpent} />
+        <div className="min-h-[80px]">
+          {amount && purchasePrice ? (
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <div className="text-sm text-blue-600 mb-1">Total Spent:</div>
+              <div className="text-xl font-bold text-blue-700">
+                <FormatPrice value={totalSpent} />
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+              <div className="text-sm text-gray-400 mb-1">Total Spent:</div>
+              <div className="text-xl font-bold text-gray-300">$0.00</div>
+            </div>
+          )}
+        </div>
 
         <div className="flex gap-3 pt-2">
           <button

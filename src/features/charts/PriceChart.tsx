@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/static-components */
 import React from 'react';
 import {
   Area,
@@ -13,6 +14,20 @@ import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
 interface PriceChartProps {
   data: [number, number][];
   color?: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    dataKey: string;
+    payload: {
+      date: string;
+      price: number;
+      fullDate: string;
+    };
+  }>;
+  label?: string;
 }
 
 export const PriceChart: React.FC<PriceChartProps> = ({
@@ -31,15 +46,29 @@ export const PriceChart: React.FC<PriceChartProps> = ({
     return `$${value.toFixed(4)}`;
   };
 
-  const formatTooltipPrice = (value: number) => {
-    return <FormatPrice value={value} />;
-  };
-
   const minPrice = Math.min(...data.map((d) => d[1]));
   const maxPrice = Math.max(...data.map((d) => d[1]));
   const priceChange =
     ((data[data.length - 1][1] - data[0][1]) / data[0][1]) * 100;
   const isPositive = priceChange >= 0;
+
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({
+    active,
+    payload,
+    label,
+  }) => {
+    if (active && payload && payload.length > 0) {
+      return (
+        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
+          <p className="text-gray-600 mb-1">{label}</p>
+          <p className="font-semibold text-gray-900">
+            Price: <FormatPrice value={payload[0].value} />
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="space-y-4">
@@ -102,20 +131,7 @@ export const PriceChart: React.FC<PriceChartProps> = ({
               domain={['auto', 'auto']}
             />
 
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'white',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-              }}
-              labelStyle={{ color: '#111827', fontWeight: '600' }}
-              formatter={(value: number) => [
-                formatTooltipPrice(value),
-                'Price',
-              ]}
-              labelFormatter={(label) => `Date: ${label}`}
-            />
+            <Tooltip content={<CustomTooltip />} />
 
             <Area
               type="monotone"

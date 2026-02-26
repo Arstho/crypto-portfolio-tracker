@@ -10,8 +10,8 @@ import { LoadingSpinner } from '../../shared/components/LoadingSpinner/LoadingSp
 import { PriceChange } from '../../shared/components/PriceChange/PriceChange';
 import { SearchInput } from '../../shared/components/SearchInput/SearchInput';
 import { Table } from '../../shared/components/Table/Table';
-import type { Coin } from '../../shared/mocks/cryptos';
 import { getMockChartData } from '../../shared/mocks/cryptos';
+import type { Coin } from '../../shared/types/coinGecko';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();

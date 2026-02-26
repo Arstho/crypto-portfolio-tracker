@@ -1,23 +1,26 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/store';
 import { mockCoins } from '../../../shared/mocks/cryptos';
 import {
-  addPortfolioItem,
+  addTransaction,
+  clearAllTransactions,
   clearError,
-  clearPortfolio,
-  removePortfolioItem,
+  removeTransaction,
   selectPortfolioError,
   selectPortfolioItems,
-  selectPortfolioLoading,
   selectPortfolioStats,
   selectPortfolioWithCurrentPrices,
+  selectTransactions,
   setError,
-  updatePortfolioItem,
+  updateTransaction,
 } from '../portfolioSlice';
-import { type PortfolioItem } from '../types';
+import type { Transaction } from '../types';
 
 export const usePortfolio = () => {
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
+
+  const transactions = useAppSelector(selectTransactions);
   const items = useAppSelector(selectPortfolioItems);
   const itemsWithPrices = useAppSelector((state) =>
     selectPortfolioWithCurrentPrices(state, mockCoins)
@@ -25,64 +28,136 @@ export const usePortfolio = () => {
   const stats = useAppSelector((state) =>
     selectPortfolioStats(state, mockCoins)
   );
-  const loading = useAppSelector(selectPortfolioLoading);
   const error = useAppSelector(selectPortfolioError);
 
-  const addItem = useCallback(
+  const buyCoin = useCallback(
     (
       coinId: string,
       coinName: string,
       coinSymbol: string,
       coinImage: string,
       amount: number,
-      purchasePrice: number,
-      purchaseDate?: string,
+      price: number,
+      date?: string,
       notes?: string
     ) => {
       if (amount <= 0) {
         dispatch(setError('Amount must be greater than 0'));
-        return;
+        return false;
       }
-      if (purchasePrice <= 0) {
+      if (price <= 0) {
         dispatch(setError('Price must be greater than 0'));
-        return;
+        return false;
       }
 
-      dispatch(
-        addPortfolioItem({
-          coinId,
-          coinName,
-          coinSymbol,
-          coinImage,
-          amount,
-          purchasePrice,
-          purchaseDate: purchaseDate || new Date().toISOString(),
-          notes,
-        })
-      );
+      setLoading(true);
+      try {
+        dispatch(
+          addTransaction({
+            type: 'buy',
+            coinId,
+            coinName,
+            coinSymbol,
+            coinImage,
+            amount,
+            price,
+            date: date || new Date().toISOString(),
+            notes,
+          })
+        );
+        return true;
+      } finally {
+        setLoading(false);
+      }
     },
     [dispatch]
   );
 
-  const removeItem = useCallback(
+  const sellCoin = useCallback(
+    (
+      coinId: string,
+      coinName: string,
+      coinSymbol: string,
+      coinImage: string,
+      amount: number,
+      price: number,
+      date?: string,
+      notes?: string
+    ) => {
+      if (amount <= 0) {
+        dispatch(setError('Amount must be greater than 0'));
+        return false;
+      }
+      if (price <= 0) {
+        dispatch(setError('Price must be greater than 0'));
+        return false;
+      }
+
+      const coinItem = items.find((item) => item.coinId === coinId);
+      if (!coinItem || coinItem.totalAmount < amount) {
+        dispatch(setError(`Not enough ${coinSymbol.toUpperCase()} to sell`));
+        return false;
+      }
+
+      setLoading(true);
+      try {
+        dispatch(
+          addTransaction({
+            type: 'sell',
+            coinId,
+            coinName,
+            coinSymbol,
+            coinImage,
+            amount,
+            price,
+            date: date || new Date().toISOString(),
+            notes,
+          })
+        );
+        return true;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch, items]
+  );
+
+  const removeTransactionById = useCallback(
     (id: string) => {
-      dispatch(removePortfolioItem(id));
+      setLoading(true);
+      try {
+        dispatch(removeTransaction(id));
+      } finally {
+        setLoading(false);
+      }
     },
     [dispatch]
   );
 
-  const updateItem = useCallback(
-    (id: string, updates: Partial<PortfolioItem>) => {
-      dispatch(updatePortfolioItem({ id, updates }));
+  const updateTransactionById = useCallback(
+    (id: string, updates: Partial<Transaction>) => {
+      setLoading(true);
+      try {
+        dispatch(updateTransaction({ id, updates }));
+      } finally {
+        setLoading(false);
+      }
     },
     [dispatch]
   );
 
   const clearAll = useCallback(() => {
     if (
-      window.confirm('Are you sure you want to clear your entire portfolio?')
+      window.confirm(
+        'Are you sure you want to clear your entire portfolio history?'
+      )
     ) {
-      dispatch(clearPortfolio());
+      setLoading(true);
+      try {
+        dispatch(clearAllTransactions());
+      } finally {
+        setLoading(false);
+      }
     }
   }, [dispatch]);
 
@@ -91,14 +166,16 @@ export const usePortfolio = () => {
   }, [dispatch]);
 
   return {
+    transactions,
     items,
     itemsWithPrices,
     stats,
     loading,
     error,
-    addItem,
-    removeItem,
-    updateItem,
+    buyCoin,
+    sellCoin,
+    removeTransaction: removeTransactionById,
+    updateTransaction: updateTransactionById,
     clearAll,
     clearError: clearErrorMsg,
   };

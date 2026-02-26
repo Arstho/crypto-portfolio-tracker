@@ -1,36 +1,4 @@
-export interface Coin {
-  id: string;
-  symbol: string;
-  name: string;
-  image: string;
-  current_price: number;
-  market_cap: number;
-  market_cap_rank: number;
-  price_change_percentage_24h: number;
-  total_volume: number;
-  high_24h: number;
-  low_24h: number;
-  circulating_supply: number;
-  total_supply: number | null;
-  ath: number;
-  ath_change_percentage: number;
-  atl: number;
-  last_updated: string;
-}
-
-export interface CoinDetail extends Coin {
-  description: string;
-  homepage: string;
-  github: string;
-  price_change_percentage_1h: number;
-  price_change_percentage_7d: number;
-  price_change_percentage_30d: number;
-  price_change_percentage_1y: number;
-}
-
-export interface ChartData {
-  prices: [number, number][];
-}
+import type { ChartData, Coin, CoinDetail } from '../types/coinGecko';
 
 const generatePriceHistory = (
   basePrice: number,
@@ -42,7 +10,6 @@ const generatePriceHistory = (
 
   for (let i = days; i >= 0; i--) {
     const timestamp = now - i * dayInMs;
-    // Добавляем случайные колебания ±10%
     const randomFactor = 0.9 + Math.random() * 0.2;
     const price = basePrice * randomFactor;
     prices.push([timestamp, price]);
@@ -261,7 +228,11 @@ export const getMockCoinDetail = (id: string): CoinDetail | undefined => {
         ? 'https://github.com/bitcoin/bitcoin'
         : coin.id === 'ethereum'
           ? 'https://github.com/ethereum'
-          : '',
+          : coin.id === 'binancecoin'
+            ? 'https://github.com/binance'
+            : coin.id === 'solana'
+              ? 'https://github.com/solana-labs'
+              : '',
     price_change_percentage_1h: Math.random() * 6 - 3, // -3% to +3%
     price_change_percentage_7d: Math.random() * 20 - 10, // -10% to +10%
     price_change_percentage_30d: Math.random() * 40 - 20, // -20% to +20%

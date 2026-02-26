@@ -1,18 +1,45 @@
 import React, { useState } from 'react';
+import { SellCoinModal } from '../../features/portfolio/components/SellCoinModal';
 import { usePortfolio } from '../../features/portfolio/hooks/usePortfolio';
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
-import { LoadingSpinner } from '../../shared/components/LoadingSpinner/LoadingSpinner';
 import { PriceChange } from '../../shared/components/PriceChange/PriceChange';
+import { Skeleton } from '../../shared/components/Skeleton/Skeleton';
 
 export const PortfolioPage: React.FC = () => {
-  const { itemsWithPrices, stats, removeItem, clearAll, loading } =
+  const { itemsWithPrices, stats, removeTransaction, clearAll, loading } =
     usePortfolio();
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<
+    (typeof itemsWithPrices)[0] | null
+  >(null);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner size="lg" />
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white rounded-xl shadow-sm p-6">
+              <Skeleton className="h-4 w-24 mb-2" />
+              <Skeleton className="h-8 w-32" />
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <Skeleton className="h-6 w-40 mb-4" />
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-4 py-4 border-b last:border-0"
+            >
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+              <Skeleton className="h-8 w-24" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -98,11 +125,16 @@ export const PortfolioPage: React.FC = () => {
               stats.totalProfitLoss >= 0 ? 'text-green-500' : 'text-red-500'
             }`}
           >
+            {stats.totalProfitLoss >= 0 ? '+' : '-'}
             <FormatPrice value={Math.abs(stats.totalProfitLoss)} />
             <span className="text-sm ml-2">
-              {stats.totalProfitLoss >= 0 ? '+' : '-'}
-              {Math.abs(stats.totalProfitLossPercentage).toFixed(2)}%
+              ({stats.totalProfitLossPercentage >= 0 ? '+' : ''}
+              {stats.totalProfitLossPercentage.toFixed(2)}%)
             </span>
+          </div>
+          <div className="text-xs text-gray-500 mt-1">
+            Realized: <FormatPrice value={Math.abs(stats.realizedProfitLoss)} />
+            {stats.realizedProfitLoss >= 0 ? ' profit' : ' loss'}
           </div>
         </div>
 
@@ -131,7 +163,7 @@ export const PortfolioPage: React.FC = () => {
         <div className="divide-y divide-gray-200">
           {itemsWithPrices.map((item) => (
             <div
-              key={item.id}
+              key={item.coinId}
               className="p-6 hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-start justify-between">
@@ -148,45 +180,32 @@ export const PortfolioPage: React.FC = () => {
                     <p className="text-sm text-gray-500">
                       {item.coinSymbol.toUpperCase()}
                     </p>
-                    {item.notes && (
-                      <p className="text-xs text-gray-400 mt-1">{item.notes}</p>
-                    )}
                   </div>
                 </div>
 
-                <button
-                  onClick={() => removeItem(item.id)}
-                  className="text-gray-400 hover:text-red-500 transition-colors"
-                  title="Remove"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSelectedItem(item)}
+                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
+                    Sell
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
                 <div>
                   <div className="text-xs text-gray-500">Amount</div>
                   <div className="font-medium">
-                    {item.amount} {item.coinSymbol.toUpperCase()}
+                    {item.totalAmount.toFixed(4)}{' '}
+                    {item.coinSymbol.toUpperCase()}
                   </div>
                 </div>
 
                 <div>
                   <div className="text-xs text-gray-500">Avg. Buy Price</div>
                   <div className="font-medium">
-                    <FormatPrice value={item.purchasePrice} />
+                    <FormatPrice value={item.avgBuyPrice} />
                   </div>
                 </div>
 
@@ -211,18 +230,94 @@ export const PortfolioPage: React.FC = () => {
                     <FormatPrice value={Math.abs(item.profitLoss)} />
                   </div>
                 </div>
-
-                <div>
-                  <div className="text-xs text-gray-500">Purchase Date</div>
-                  <div className="text-sm">
-                    {new Date(item.purchaseDate).toLocaleDateString()}
-                  </div>
-                </div>
               </div>
+
+              {item.transactions.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <details>
+                    <summary className="text-sm text-gray-500 cursor-pointer hover:text-gray-700">
+                      Transaction History ({item.transactions.length})
+                    </summary>
+                    <div className="mt-2 space-y-2">
+                      {item.transactions
+                        .sort(
+                          (a, b) =>
+                            new Date(b.date).getTime() -
+                            new Date(a.date).getTime()
+                        )
+                        .map((t) => (
+                          <div
+                            key={t.id}
+                            className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`px-2 py-0.5 rounded text-xs ${
+                                  t.type === 'buy'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-red-100 text-red-700'
+                                }`}
+                              >
+                                {t.type.toUpperCase()}
+                              </span>
+                              <span>
+                                {new Date(t.date).toLocaleDateString()}
+                              </span>
+                              <span>
+                                {t.amount} {item.coinSymbol.toUpperCase()}
+                              </span>
+                              <span>
+                                @ <FormatPrice value={t.price} />
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">
+                                <FormatPrice value={t.total} />
+                              </span>
+                              <button
+                                onClick={() => removeTransaction(t.id)}
+                                className="text-gray-400 hover:text-red-500"
+                                title="Delete transaction"
+                              >
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </details>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </div>
+
+      {selectedItem && (
+        <SellCoinModal
+          isOpen={!!selectedItem}
+          onClose={() => setSelectedItem(null)}
+          coinId={selectedItem.coinId}
+          coinName={selectedItem.coinName}
+          coinSymbol={selectedItem.coinSymbol}
+          coinImage={selectedItem.coinImage}
+          maxAmount={selectedItem.totalAmount}
+          avgBuyPrice={selectedItem.avgBuyPrice}
+          currentPrice={selectedItem.currentPrice}
+        />
+      )}
     </div>
   );
 };
