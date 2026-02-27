@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { PortfolioGrowthChart } from '../../features/charts/PortfolioGrowthChart';
 import { PortfolioPieChart } from '../../features/charts/PortfolioPieChart';
+import {
+  PortfolioFilters,
+  type SortDirection,
+  type SortField,
+} from '../../features/portfolio/components/PortfolioFilters';
 import { SellCoinModal } from '../../features/portfolio/components/SellCoinModal';
 import { usePortfolio } from '../../features/portfolio/hooks/usePortfolio';
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
@@ -7,11 +13,95 @@ import { PriceChange } from '../../shared/components/PriceChange/PriceChange';
 import { Skeleton } from '../../shared/components/Skeleton/Skeleton';
 
 export const PortfolioPage: React.FC = () => {
-  const { itemsWithPrices, stats, removeTransaction, clearAll, loading } =
-    usePortfolio();
+  const {
+    itemsWithPrices,
+    stats,
+    transactions,
+    removeTransaction,
+    clearAll,
+    loading,
+  } = usePortfolio();
   const [selectedItem, setSelectedItem] = useState<
     (typeof itemsWithPrices)[0] | null
   >(null);
+
+  const [sortField, setSortField] = useState<SortField>('value');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [showProfitableOnly, setShowProfitableOnly] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSortChange = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+
+  const filteredAndSortedItems = useMemo(() => {
+    let filtered = [...itemsWithPrices];
+
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (item) =>
+          item.coinName.toLowerCase().includes(term) ||
+          item.coinSymbol.toLowerCase().includes(term)
+      );
+    }
+
+    if (showProfitableOnly) {
+      filtered = filtered.filter((item) => item.profitLoss > 0);
+    }
+
+    filtered.sort((a, b) => {
+      let aValue: number | string = 0;
+      let bValue: number | string = 0;
+
+      switch (sortField) {
+        case 'name':
+          aValue = a.coinName;
+          bValue = b.coinName;
+          break;
+        case 'value':
+          aValue = a.currentValue;
+          bValue = b.currentValue;
+          break;
+        case 'profit':
+          aValue = a.profitLossPercentage;
+          bValue = b.profitLossPercentage;
+          break;
+        case 'amount':
+          aValue = a.totalAmount;
+          bValue = b.totalAmount;
+          break;
+      }
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      return sortDirection === 'asc'
+        ? (aValue as number) - (bValue as number)
+        : (bValue as number) - (aValue as number);
+    });
+
+    return filtered;
+  }, [
+    itemsWithPrices,
+    searchTerm,
+    showProfitableOnly,
+    sortField,
+    sortDirection,
+  ]);
+
+  const currentValues = itemsWithPrices.map((item) => ({
+    coinId: item.coinId,
+    value: item.currentValue,
+  }));
 
   if (loading) {
     return (
@@ -30,6 +120,11 @@ export const PortfolioPage: React.FC = () => {
           <div className="h-[400px] flex items-center justify-center">
             <Skeleton className="w-[300px] h-[300px] rounded-full" />
           </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <Skeleton className="h-6 w-48 mb-4" />
+          <Skeleton className="h-[400px] w-full" />
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6">
@@ -165,13 +260,32 @@ export const PortfolioPage: React.FC = () => {
 
       <PortfolioPieChart data={stats.diversification} />
 
+      <PortfolioGrowthChart
+        transactions={transactions}
+        currentValues={currentValues}
+      />
+
+      <PortfolioFilters
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSortChange={handleSortChange}
+        showProfitableOnly={showProfitableOnly}
+        onShowProfitableOnlyChange={setShowProfitableOnly}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
+
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Your Assets</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Your Assets{' '}
+            {filteredAndSortedItems.length !== itemsWithPrices.length &&
+              `(${filteredAndSortedItems.length} of ${itemsWithPrices.length})`}
+          </h2>
         </div>
 
         <div className="divide-y divide-gray-200">
-          {itemsWithPrices.map((item) => (
+          {filteredAndSortedItems.map((item) => (
             <div
               key={item.coinId}
               className="p-6 hover:bg-gray-50 transition-colors"
@@ -312,6 +426,12 @@ export const PortfolioPage: React.FC = () => {
               )}
             </div>
           ))}
+
+          {filteredAndSortedItems.length === 0 && (
+            <div className="p-12 text-center">
+              <p className="text-gray-400">No assets match your filters</p>
+            </div>
+          )}
         </div>
       </div>
 
