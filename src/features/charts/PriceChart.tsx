@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/static-components */
 import React from 'react';
 import {
   Area,
@@ -30,45 +29,68 @@ interface CustomTooltipProps {
   label?: string;
 }
 
+const CustomTooltip: React.FC<CustomTooltipProps> = ({
+  active,
+  payload,
+  label,
+}) => {
+  if (active && payload && payload.length > 0) {
+    return (
+      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
+        <p className="text-gray-600 mb-1">{label}</p>
+        <p className="font-semibold text-gray-900">
+          Price: <FormatPrice value={payload[0].value} />
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export const PriceChart: React.FC<PriceChartProps> = ({
   data,
   color = '#3b82f6',
 }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="h-[400px] flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+        <p className="text-gray-400">No chart data available</p>
+      </div>
+    );
+  }
+
   const chartData = data.map(([timestamp, price]) => ({
-    date: new Date(timestamp).toLocaleDateString(),
+    date: new Date(timestamp).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    }),
     price,
-    fullDate: new Date(timestamp).toLocaleString(),
+    fullDate: new Date(timestamp).toLocaleString('en-US', {
+      dateStyle: 'full',
+      timeStyle: 'short',
+    }),
   }));
 
   const formatYAxis = (value: number) => {
-    if (value >= 1000) return `$${(value / 1000).toFixed(1)}k`;
+    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+    if (value >= 1_000) return `$${(value / 1_000).toFixed(1)}k`;
     if (value >= 1) return `$${value.toFixed(2)}`;
     return `$${value.toFixed(4)}`;
   };
 
-  const minPrice = Math.min(...data.map((d) => d[1]));
-  const maxPrice = Math.max(...data.map((d) => d[1]));
-  const priceChange =
-    ((data[data.length - 1][1] - data[0][1]) / data[0][1]) * 100;
+  const prices = data.map((d) => d[1]);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const firstPrice = prices[0];
+  const lastPrice = prices[prices.length - 1];
+  const priceChange = firstPrice
+    ? ((lastPrice - firstPrice) / firstPrice) * 100
+    : 0;
   const isPositive = priceChange >= 0;
 
-  const CustomTooltip: React.FC<CustomTooltipProps> = ({
-    active,
-    payload,
-    label,
-  }) => {
-    if (active && payload && payload.length > 0) {
-      return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="text-gray-600 mb-1">{label}</p>
-          <p className="font-semibold text-gray-900">
-            Price: <FormatPrice value={payload[0].value} />
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+  const pricePadding = (maxPrice - minPrice) * 0.05;
+  const yDomainMin = Math.max(0, minPrice - pricePadding);
+  const yDomainMax = maxPrice + pricePadding;
 
   return (
     <div className="space-y-4">
@@ -78,11 +100,17 @@ export const PriceChart: React.FC<PriceChartProps> = ({
           <div className="font-semibold">
             <FormatPrice value={minPrice} />
           </div>
+          <div className="text-xs text-gray-400">
+            {new Date(data[0][0]).toLocaleDateString()}
+          </div>
         </div>
         <div>
           <div className="text-sm text-gray-500">To</div>
           <div className="font-semibold">
             <FormatPrice value={maxPrice} />
+          </div>
+          <div className="text-xs text-gray-400">
+            {new Date(data[data.length - 1][0]).toLocaleDateString()}
           </div>
         </div>
         <div>
@@ -94,6 +122,9 @@ export const PriceChart: React.FC<PriceChartProps> = ({
           >
             {isPositive ? '+' : ''}
             {priceChange.toFixed(2)}%
+          </div>
+          <div className="text-xs text-gray-400">
+            {isPositive ? '▲' : '▼'} over period
           </div>
         </div>
       </div>
@@ -121,6 +152,8 @@ export const PriceChart: React.FC<PriceChartProps> = ({
               tick={{ fontSize: 12, fill: '#6b7280' }}
               tickLine={false}
               axisLine={{ stroke: '#e5e7eb' }}
+              interval="preserveStartEnd"
+              minTickGap={50}
             />
 
             <YAxis
@@ -128,7 +161,8 @@ export const PriceChart: React.FC<PriceChartProps> = ({
               tick={{ fontSize: 12, fill: '#6b7280' }}
               tickLine={false}
               axisLine={{ stroke: '#e5e7eb' }}
-              domain={['auto', 'auto']}
+              domain={[yDomainMin, yDomainMax]}
+              width={80}
             />
 
             <Tooltip content={<CustomTooltip />} />
@@ -139,6 +173,8 @@ export const PriceChart: React.FC<PriceChartProps> = ({
               stroke={color}
               strokeWidth={2}
               fill={`url(#gradient-${color})`}
+              isAnimationActive={true}
+              animationDuration={300}
             />
           </AreaChart>
         </ResponsiveContainer>

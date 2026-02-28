@@ -238,14 +238,8 @@ export const selectPortfolioStats = createSelector(
     let totalCurrentValue = 0;
     let totalRealizedProfit = 0;
     const performers: Performer[] = [];
-    const diversification: {
-      coinId: string;
-      coinName: string;
-      percentage: number;
-      value: number;
-    }[] = [];
 
-    items.forEach((item) => {
+    const coinData = items.map((item) => {
       const coin = coins.find((c) => c.id === item.coinId);
       const currentPrice = coin?.current_price || 0;
       const currentValue = item.totalAmount * currentPrice;
@@ -258,28 +252,45 @@ export const selectPortfolioStats = createSelector(
           0
         ) || 0;
 
-      totalInvested += remainingCost;
-      totalCurrentValue += currentValue;
-      totalRealizedProfit += stats?.realizedProfit || 0;
+      return {
+        item,
+        currentValue,
+        remainingCost,
+        realizedProfit: stats?.realizedProfit || 0,
+        coinName: item.coinName,
+        coinId: item.coinId,
+      };
+    });
 
-      const unrealizedProfit = currentValue - remainingCost;
-      const totalProfitLoss = (stats?.realizedProfit || 0) + unrealizedProfit;
+    coinData.forEach((data) => {
+      totalInvested += data.remainingCost;
+      totalCurrentValue += data.currentValue;
+      totalRealizedProfit += data.realizedProfit;
+    });
+
+    const diversification = coinData.map((data) => {
+      const unrealizedProfit = data.currentValue - data.remainingCost;
+      const totalProfitLoss = data.realizedProfit + unrealizedProfit;
       const totalProfitLossPercentage =
-        remainingCost > 0 ? (totalProfitLoss / remainingCost) * 100 : 0;
+        data.remainingCost > 0
+          ? (totalProfitLoss / data.remainingCost) * 100
+          : 0;
 
       performers.push({
-        coinId: item.coinId,
-        coinName: item.coinName,
+        coinId: data.coinId,
+        coinName: data.coinName,
         profitLossPercentage: totalProfitLossPercentage,
       });
 
-      diversification.push({
-        coinId: item.coinId,
-        coinName: item.coinName,
+      return {
+        coinId: data.coinId,
+        coinName: data.coinName,
         percentage:
-          totalCurrentValue > 0 ? (currentValue / totalCurrentValue) * 100 : 0,
-        value: currentValue,
-      });
+          totalCurrentValue > 0
+            ? (data.currentValue / totalCurrentValue) * 100
+            : 0,
+        value: data.currentValue,
+      };
     });
 
     performers.sort((a, b) => b.profitLossPercentage - a.profitLossPercentage);
