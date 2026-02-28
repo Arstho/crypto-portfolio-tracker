@@ -1,14 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PortfolioGrowthChart } from '../../features/charts/PortfolioGrowthChart';
 import { PortfolioPieChart } from '../../features/charts/PortfolioPieChart';
+import { PortfolioExport } from '../../features/portfolio/components/PortfolioExport';
 import {
   PortfolioFilters,
   type SortDirection,
   type SortField,
 } from '../../features/portfolio/components/PortfolioFilters';
+import { PortfolioGoals } from '../../features/portfolio/components/PortfolioGoals';
 import { SellCoinModal } from '../../features/portfolio/components/SellCoinModal';
+import { useGoals } from '../../features/portfolio/hooks/useGoals';
 import { usePortfolio } from '../../features/portfolio/hooks/usePortfolio';
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
+import { Notification } from '../../shared/components/Notification/Notification';
 import { PriceChange } from '../../shared/components/PriceChange/PriceChange';
 import { Skeleton } from '../../shared/components/Skeleton/Skeleton';
 
@@ -21,14 +25,33 @@ export const PortfolioPage: React.FC = () => {
     clearAll,
     loading,
   } = usePortfolio();
+  const { goals, addNewGoal, removeGoal, checkAndUpdateGoals } = useGoals();
+
   const [selectedItem, setSelectedItem] = useState<
     (typeof itemsWithPrices)[0] | null
   >(null);
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+  } | null>(null);
 
   const [sortField, setSortField] = useState<SortField>('value');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [showProfitableOnly, setShowProfitableOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    checkAndUpdateGoals(
+      stats.totalCurrentValue,
+      stats.totalProfitLoss,
+      stats.totalProfitLossPercentage
+    );
+  }, [
+    stats.totalCurrentValue,
+    stats.totalProfitLoss,
+    stats.totalProfitLossPercentage,
+    checkAndUpdateGoals,
+  ]);
 
   const handleSortChange = (field: SortField) => {
     if (sortField === field) {
@@ -103,6 +126,13 @@ export const PortfolioPage: React.FC = () => {
     value: item.currentValue,
   }));
 
+  const showNotification = (
+    message: string,
+    type: 'success' | 'error' | 'info' = 'info'
+  ) => {
+    setNotification({ message, type });
+  };
+
   if (loading) {
     return (
       <div className="space-y-8">
@@ -113,6 +143,12 @@ export const PortfolioPage: React.FC = () => {
               <Skeleton className="h-8 w-32" />
             </div>
           ))}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <Skeleton className="h-6 w-48 mb-4" />
+          <Skeleton className="h-16 w-full mb-2" />
+          <Skeleton className="h-16 w-full" />
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6">
@@ -196,14 +232,32 @@ export const PortfolioPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
+
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">My Portfolio</h1>
-        <button
-          onClick={clearAll}
-          className="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
-        >
-          Clear Portfolio
-        </button>
+        <div className="flex gap-2">
+          <PortfolioExport
+            transactions={transactions}
+            items={itemsWithPrices}
+            stats={stats}
+          />
+          <button
+            onClick={async () => {
+              await clearAll();
+              showNotification('Portfolio cleared successfully', 'success');
+            }}
+            className="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            Clear Portfolio
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -257,6 +311,18 @@ export const PortfolioPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      <PortfolioGoals
+        currentValue={stats.totalCurrentValue}
+        totalProfit={stats.totalProfitLoss}
+        profitPercentage={stats.totalProfitLossPercentage}
+        goals={goals}
+        onAddGoal={addNewGoal}
+        onRemoveGoal={removeGoal}
+        onGoalReached={(goal) => {
+          showNotification(`🎉 Goal reached: ${goal.name}!`, 'success');
+        }}
+      />
 
       <PortfolioPieChart data={stats.diversification} />
 
@@ -399,7 +465,13 @@ export const PortfolioPage: React.FC = () => {
                                 <FormatPrice value={t.total} />
                               </span>
                               <button
-                                onClick={() => removeTransaction(t.id)}
+                                onClick={() => {
+                                  removeTransaction(t.id);
+                                  showNotification(
+                                    'Transaction deleted',
+                                    'info'
+                                  );
+                                }}
                                 className="text-gray-400 hover:text-red-500"
                                 title="Delete transaction"
                               >
