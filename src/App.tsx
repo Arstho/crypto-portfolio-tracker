@@ -19,6 +19,9 @@ function App() {
               >
                 Portfolio
               </a>
+              <a href="/tools" className="text-gray-600 hover:text-gray-900">
+                Tools
+              </a>
             </nav>
           </div>
         </div>

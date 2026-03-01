@@ -3,6 +3,7 @@ import App from '../App';
 import { CoinDetailsPage } from '../pages/CoinDetails/CoinDetailsPage';
 import { HomePage } from '../pages/Home/HomePage';
 import { PortfolioPage } from '../pages/Portfolio/PortfolioPage';
+import { ToolsPage } from '../pages/Tools/ToolsPage';
 
 export const router = createBrowserRouter([
   {
@@ -22,5 +23,9 @@ export const router = createBrowserRouter([
         element: <PortfolioPage />,
       },
     ],
+  },
+  {
+    path: '/tools',
+    element: <ToolsPage />,
   },
 ]);
