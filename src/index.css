@@ -1,5 +1,25 @@
 @import 'tailwindcss';
 
+/* Светлая тема (по умолчанию) */
+:root {
+  --bg-primary: #f3f4f6;
+  --bg-card: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+  --hover-bg: #f9fafb;
+}
+
+/* Темная тема */
+.dark {
+  --bg-primary: #1a1a1a;
+  --bg-card: #2d2d2d;
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --border-color: #404040;
+  --hover-bg: #374151;
+}
+
 @layer base {
   body {
     font-family:
@@ -8,6 +28,11 @@
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition:
+      background-color 0.2s,
+      color 0.2s;
   }
 }
 
@@ -19,7 +44,63 @@
     padding-left: 1rem;
     padding-right: 1rem;
   }
+
+  /* Карточки */
+  .card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    transition:
+      background-color 0.2s,
+      border-color 0.2s;
+  }
+
+  .card:hover {
+    background-color: var(--hover-bg);
+  }
+
+  /* Текст */
+  .text-primary {
+    color: var(--text-primary);
+  }
+
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+
+  /* Границы */
+  .border-theme {
+    border-color: var(--border-color);
+  }
+
+  /* Кнопки */
+  .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+  }
+
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+
+  .btn-secondary {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--hover-bg);
+  }
 }
+
 @keyframes slide-in {
   from {
     transform: translateX(100%);

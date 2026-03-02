@@ -14,6 +14,15 @@ interface PortfolioGoalsProps {
   onGoalReached?: (goal: Goal) => void;
 }
 
+type GoalType = 'profit' | 'value' | 'percent';
+
+interface NewGoalState {
+  type: GoalType;
+  target: string;
+  deadline: string;
+  name: string;
+}
+
 export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
   currentValue,
   totalProfit,
@@ -24,8 +33,8 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
   onGoalReached,
 }) => {
   const [showAddGoal, setShowAddGoal] = useState(false);
-  const [newGoal, setNewGoal] = useState({
-    type: 'profit' as const,
+  const [newGoal, setNewGoal] = useState<NewGoalState>({
+    type: 'profit',
     target: '',
     deadline: '',
     name: '',
@@ -104,14 +113,14 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
+    <div className="card p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-xl font-semibold text-[var(--text-primary)]">
           🎯 Portfolio Goals
         </h2>
         <button
           onClick={() => setShowAddGoal(true)}
-          className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm flex items-center gap-1"
+          className="btn-primary text-sm flex items-center gap-1"
         >
           <svg
             className="w-4 h-4"
@@ -131,8 +140,10 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
       </div>
 
       {showAddGoal && (
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-3">Create New Goal</h3>
+        <div className="mb-4 p-4 bg-[var(--hover-bg)] rounded-lg border border-[var(--border-color)]">
+          <h3 className="font-medium text-[var(--text-primary)] mb-3">
+            Create New Goal
+          </h3>
 
           <div className="space-y-3">
             <input
@@ -142,16 +153,18 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
                 setNewGoal((prev) => ({ ...prev, name: e.target.value }))
               }
               placeholder="Goal name (e.g., 'First $10k')"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-primary)] placeholder-[var(--text-secondary)]"
             />
 
             <select
               value={newGoal.type}
               onChange={(e) =>
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                setNewGoal((prev) => ({ ...prev, type: e.target.value as any }))
+                setNewGoal((prev) => ({
+                  ...prev,
+                  type: e.target.value as GoalType,
+                }))
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-primary)]"
             >
               <option value="profit">Profit ($)</option>
               <option value="value">Portfolio Value ($)</option>
@@ -165,7 +178,7 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
                 setNewGoal((prev) => ({ ...prev, target: e.target.value }))
               }
               placeholder="Target amount"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-primary)] placeholder-[var(--text-secondary)]"
             />
 
             <input
@@ -174,20 +187,16 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
               onChange={(e) =>
                 setNewGoal((prev) => ({ ...prev, deadline: e.target.value }))
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Deadline (optional)"
+              className="w-full px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-primary)]"
             />
 
             <div className="flex gap-2">
-              <button
-                onClick={handleAddGoal}
-                className="flex-1 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              >
+              <button onClick={handleAddGoal} className="flex-1 btn-primary">
                 Save Goal
               </button>
               <button
                 onClick={() => setShowAddGoal(false)}
-                className="flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 btn-secondary"
               >
                 Cancel
               </button>
@@ -197,9 +206,9 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
       )}
 
       {goals.length === 0 && !showAddGoal ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-          <p className="text-gray-400 mb-2">No goals set yet</p>
-          <p className="text-sm text-gray-400">
+        <div className="text-center py-8 bg-[var(--hover-bg)] rounded-lg border-2 border-dashed border-[var(--border-color)]">
+          <p className="text-[var(--text-secondary)] mb-2">No goals set yet</p>
+          <p className="text-sm text-[var(--text-secondary)]">
             Add goals to track your progress
           </p>
         </div>
@@ -214,12 +223,12 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{getGoalIcon(goal.type)}</span>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-[var(--text-primary)]">
                       {goal.name}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-[var(--text-secondary)]">
                       {goal.type === 'profit' && (
                         <FormatPrice value={goal.target} />
                       )}
@@ -230,7 +239,7 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
                     </span>
                     <button
                       onClick={() => onRemoveGoal(goal.id)}
-                      className="text-gray-400 hover:text-red-500 cursor-pointer"
+                      className="text-[var(--text-secondary)] hover:text-red-500 transition-colors cursor-pointer"
                     >
                       <svg
                         className="w-4 h-4"
@@ -249,7 +258,7 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
                   </div>
                 </div>
 
-                <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="relative h-2 bg-[var(--border-color)] rounded-full overflow-hidden">
                   <div
                     className={`absolute left-0 top-0 h-full ${getGoalColor(progress)} transition-all duration-500`}
                     style={{ width: `${progress}%` }}
@@ -257,11 +266,11 @@ export const PortfolioGoals: React.FC<PortfolioGoalsProps> = ({
                 </div>
 
                 <div className="flex justify-between mt-1 text-xs">
-                  <span className="text-gray-500">
+                  <span className="text-[var(--text-secondary)]">
                     Progress: {progress.toFixed(1)}%
                   </span>
                   {goal.deadline && (
-                    <span className="text-gray-400">
+                    <span className="text-[var(--text-secondary)]">
                       Deadline: {new Date(goal.deadline).toLocaleDateString()}
                     </span>
                   )}

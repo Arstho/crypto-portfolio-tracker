@@ -62,12 +62,12 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
     const profitPercentage = invested > 0 ? (profit / invested) * 100 : 0;
 
     return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-        <p className="text-gray-600 mb-2">{label}</p>
-        <p className="text-gray-600">
+      <div className="bg-[var(--bg-card)] p-3 border border-[var(--border-color)] rounded-lg shadow-lg">
+        <p className="text-[var(--text-secondary)] mb-2">{label}</p>
+        <p className="text-[var(--text-secondary)]">
           Value: <FormatPrice value={value} />
         </p>
-        <p className="text-gray-600">
+        <p className="text-[var(--text-secondary)]">
           Invested: <FormatPrice value={invested} />
         </p>
         <p
@@ -90,7 +90,7 @@ export const PortfolioGrowthChart: React.FC<PortfolioGrowthChartProps> = ({
   transactions,
   currentValues,
 }) => {
-  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>(periods[1]); // 1M по умолчанию
+  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>(periods[1]);
 
   const chartData = useMemo(() => {
     if (transactions.length === 0) return [];
@@ -167,8 +167,10 @@ export const PortfolioGrowthChart: React.FC<PortfolioGrowthChartProps> = ({
 
   if (transactions.length === 0) {
     return (
-      <div className="h-[400px] flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-        <p className="text-gray-400">No transaction history to display</p>
+      <div className="h-[400px] flex items-center justify-center bg-[var(--bg-card)] rounded-lg border-2 border-dashed border-[var(--border-color)]">
+        <p className="text-[var(--text-secondary)]">
+          No transaction history to display
+        </p>
       </div>
     );
   }
@@ -187,9 +189,9 @@ export const PortfolioGrowthChart: React.FC<PortfolioGrowthChartProps> = ({
   );
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
+    <div className="card p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-xl font-semibold text-[var(--text-primary)]">
           Portfolio Growth
         </h2>
         <div className="flex gap-2">
@@ -200,7 +202,7 @@ export const PortfolioGrowthChart: React.FC<PortfolioGrowthChartProps> = ({
               className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
                 selectedPeriod.label === period.label
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  : 'bg-[var(--hover-bg)] text-[var(--text-secondary)] hover:bg-[var(--border-color)]'
               }`}
             >
               {period.label}
@@ -223,22 +225,22 @@ export const PortfolioGrowthChart: React.FC<PortfolioGrowthChartProps> = ({
               </linearGradient>
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
 
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 12, fill: '#6b7280' }}
+              tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
               tickLine={false}
-              axisLine={{ stroke: '#e5e7eb' }}
+              axisLine={{ stroke: 'var(--border-color)' }}
               interval="preserveStartEnd"
               minTickGap={50}
             />
 
             <YAxis
               tickFormatter={formatYAxis}
-              tick={{ fontSize: 12, fill: '#6b7280' }}
+              tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
               tickLine={false}
-              axisLine={{ stroke: '#e5e7eb' }}
+              axisLine={{ stroke: 'var(--border-color)' }}
               domain={[minValue * 0.95, maxValue * 1.05]}
             />
 
@@ -268,11 +270,15 @@ export const PortfolioGrowthChart: React.FC<PortfolioGrowthChartProps> = ({
       <div className="flex gap-6 mt-4 justify-center">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-blue-500 rounded-full" />
-          <span className="text-sm text-gray-600">Portfolio Value</span>
+          <span className="text-sm text-[var(--text-secondary)]">
+            Portfolio Value
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-gray-500 rounded-full" />
-          <span className="text-sm text-gray-600">Total Invested</span>
+          <span className="text-sm text-[var(--text-secondary)]">
+            Total Invested
+          </span>
         </div>
       </div>
     </div>

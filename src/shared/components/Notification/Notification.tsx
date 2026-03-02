@@ -18,32 +18,68 @@ export const Notification: React.FC<NotificationProps> = ({
     return () => clearTimeout(timer);
   }, [duration, onClose]);
 
-  const colors = {
-    success: 'bg-green-50 text-green-800 border-green-200',
-    error: 'bg-red-50 text-red-800 border-red-200',
-    info: 'bg-blue-50 text-blue-800 border-blue-200',
+  const getTypeStyles = () => {
+    switch (type) {
+      case 'success':
+        return {
+          bg: 'bg-green-500',
+          text: 'text-white',
+          icon: '🎉',
+        };
+      case 'error':
+        return {
+          bg: 'bg-red-500',
+          text: 'text-white',
+          icon: '❌',
+        };
+      case 'info':
+      default:
+        return {
+          bg: 'bg-blue-500',
+          text: 'text-white',
+          icon: 'ℹ️',
+        };
+    }
   };
 
-  const icons = {
-    success: '🎉',
-    error: '❌',
-    info: 'ℹ️',
-  };
+  const styles = getTypeStyles();
 
   return (
     <div
-      className={`fixed top-4 right-4 p-4 rounded-lg border ${colors[type]} shadow-lg animate-slide-in`}
+      className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg animate-slide-in ${styles.bg} ${styles.text}`}
+      role="alert"
     >
-      <div className="flex items-center gap-2">
-        <span>{icons[type]}</span>
-        <span>{message}</span>
+      <div className="flex items-center gap-3">
+        <span className="text-xl">{styles.icon}</span>
+        <span className="text-sm font-medium">{message}</span>
         <button
           onClick={onClose}
-          className="ml-4 text-gray-500 hover:text-gray-700"
+          className="ml-4 hover:opacity-80 transition-opacity"
+          aria-label="Close notification"
         >
-          ×
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
       </div>
+
+      <div
+        className="absolute bottom-0 left-0 h-1 bg-white/30 rounded-b-lg"
+        style={{
+          width: '100%',
+          animation: `shrink ${duration}ms linear forwards`,
+        }}
+      />
     </div>
   );
 };

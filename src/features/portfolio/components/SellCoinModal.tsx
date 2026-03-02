@@ -75,27 +75,34 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Sell ${coinName}`}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+        {/* Информация о монете */}
+        <div className="flex items-center gap-3 p-3 bg-[var(--hover-bg)] rounded-lg">
           <img src={coinImage} alt={coinName} className="w-10 h-10" />
           <div>
-            <div className="font-medium text-gray-900">{coinName}</div>
-            <div className="text-sm text-gray-500">
+            <div className="font-medium text-[var(--text-primary)]">
+              {coinName}
+            </div>
+            <div className="text-sm text-[var(--text-secondary)]">
               {coinSymbol.toUpperCase()}
             </div>
           </div>
           <div className="ml-auto text-right">
-            <div className="text-sm text-gray-500">Available</div>
-            <div className="font-semibold">
+            <div className="text-sm text-[var(--text-secondary)]">
+              Available
+            </div>
+            <div className="font-semibold text-[var(--text-primary)]">
               {maxAmount.toFixed(4)} {coinSymbol.toUpperCase()}
             </div>
           </div>
         </div>
 
         <div className="min-h-[70px]">
-          <div className="p-3 bg-blue-50 rounded-lg">
-            <div className="text-sm text-blue-600 mb-1">Current Price P&L:</div>
+          <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+            <div className="text-sm text-blue-600 dark:text-blue-400 mb-1">
+              Current Price P&L:
+            </div>
             <div className="flex justify-between items-center">
-              <span className="font-medium">
+              <span className="font-medium text-[var(--text-primary)]">
                 <FormatPrice value={currentPrice} />
               </span>
               <span
@@ -111,12 +118,12 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
         </div>
 
         {error && (
-          <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+          <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm border border-red-200 dark:border-red-800">
             {error}
             <button
               type="button"
               onClick={clearError}
-              className="ml-2 text-red-800 hover:text-red-900"
+              className="ml-2 text-red-800 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
             >
               ×
             </button>
@@ -124,7 +131,7 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Amount to Sell <span className="text-red-500">*</span>
           </label>
           <div className="relative">
@@ -136,10 +143,10 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
               min="0"
               max={maxAmount}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="0.00"
             />
-            <span className="absolute right-3 top-2 text-gray-500">
+            <span className="absolute right-3 top-2 text-[var(--text-secondary)]">
               {coinSymbol.toUpperCase()}
             </span>
           </div>
@@ -153,11 +160,13 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Sell Price (USD) <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-2 text-gray-500">$</span>
+            <span className="absolute left-3 top-2 text-[var(--text-secondary)]">
+              $
+            </span>
             <input
               type="number"
               value={sellPrice}
@@ -165,33 +174,33 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
               step="any"
               min="0"
               required
-              className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-8 pr-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="0.00"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Sale Date
           </label>
           <input
             type="date"
             value={sellDate}
             onChange={(e) => setSellDate(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Notes (Optional)
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
             placeholder="Add any notes about this sale..."
           />
         </div>
@@ -199,30 +208,36 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
         <div className="space-y-2 min-h-[140px]">
           {amount && sellPrice ? (
             <>
-              <div className="p-3 bg-green-50 rounded-lg">
-                <div className="text-sm text-green-600 mb-1">
+              <div className="p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                <div className="text-sm text-green-600 dark:text-green-400 mb-1">
                   You will receive:
                 </div>
-                <div className="text-xl font-bold text-green-700">
+                <div className="text-xl font-bold text-green-700 dark:text-green-300">
                   <FormatPrice value={totalReceived} />
                 </div>
               </div>
 
               <div
                 className={`p-3 rounded-lg ${
-                  profitLoss >= 0 ? 'bg-green-50' : 'bg-red-50'
+                  profitLoss >= 0
+                    ? 'bg-green-50 dark:bg-green-900/30'
+                    : 'bg-red-50 dark:bg-red-900/30'
                 }`}
               >
                 <div
                   className={`text-sm mb-1 ${
-                    profitLoss >= 0 ? 'text-green-600' : 'text-red-600'
+                    profitLoss >= 0
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-red-600 dark:text-red-400'
                   }`}
                 >
                   Profit/Loss:
                 </div>
                 <div
                   className={`text-lg font-bold ${
-                    profitLoss >= 0 ? 'text-green-700' : 'text-red-700'
+                    profitLoss >= 0
+                      ? 'text-green-700 dark:text-green-300'
+                      : 'text-red-700 dark:text-red-300'
                   }`}
                 >
                   {profitLoss >= 0 ? '+' : '-'}
@@ -236,16 +251,20 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
             </>
           ) : (
             <>
-              <div className="p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                <div className="text-sm text-gray-400 mb-1">
+              <div className="p-3 bg-[var(--hover-bg)] rounded-lg border border-dashed border-[var(--border-color)]">
+                <div className="text-sm text-[var(--text-secondary)] mb-1">
                   You will receive:
                 </div>
-                <div className="text-xl font-bold text-gray-300">$0.00</div>
+                <div className="text-xl font-bold text-[var(--text-secondary)]">
+                  $0.00
+                </div>
               </div>
 
-              <div className="p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                <div className="text-sm text-gray-400 mb-1">Profit/Loss:</div>
-                <div className="text-lg font-bold text-gray-300">
+              <div className="p-3 bg-[var(--hover-bg)] rounded-lg border border-dashed border-[var(--border-color)]">
+                <div className="text-sm text-[var(--text-secondary)] mb-1">
+                  Profit/Loss:
+                </div>
+                <div className="text-lg font-bold text-[var(--text-secondary)]">
                   $0.00 (0.00%)
                 </div>
               </div>
@@ -257,7 +276,7 @@ export const SellCoinModal: React.FC<SellCoinModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex-1 px-4 py-2 border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] bg-[var(--bg-card)] hover:bg-[var(--hover-bg)] transition-colors"
           >
             Cancel
           </button>

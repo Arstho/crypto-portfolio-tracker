@@ -230,49 +230,53 @@ export const PortfolioImport: React.FC = () => {
 
   if (!coins) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="card p-6">
         <div className="flex justify-center items-center h-64">
-          <div className="text-gray-500">Loading coin data...</div>
+          <div className="text-[var(--text-secondary)]">
+            Loading coin data...
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+    <div className="card p-6">
+      <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
         📤 Import Transactions from CSV
       </h2>
 
       <div className="space-y-6">
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-medium text-blue-800 mb-2">CSV Format:</h3>
-          <p className="text-sm text-blue-600 mb-2">
+        <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+          <h3 className="font-medium text-blue-800 dark:text-blue-300 mb-2">
+            CSV Format:
+          </h3>
+          <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
             Required columns: date, type, coin, amount, price
           </p>
-          <p className="text-sm text-blue-600 mb-2">
+          <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
             Coin can be name (Bitcoin) or symbol (BTC)
           </p>
-          <pre className="text-xs bg-white p-3 rounded border border-blue-200 overflow-x-auto">
+          <pre className="text-xs bg-white dark:bg-gray-800 p-3 rounded border border-blue-200 dark:border-blue-800 overflow-x-auto text-[var(--text-primary)]">
             {exampleCSV}
           </pre>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
             Paste your CSV data:
           </label>
           <textarea
             value={importData}
             onChange={(e) => setImportData(e.target.value)}
             rows={8}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm bg-[var(--bg-card)] text-[var(--text-primary)]"
             placeholder="Paste CSV here..."
           />
         </div>
 
         {error && (
-          <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm whitespace-pre-line">
+          <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm whitespace-pre-line border border-red-200 dark:border-red-800">
             ❌ {error}
           </div>
         )}
@@ -281,14 +285,14 @@ export const PortfolioImport: React.FC = () => {
           <button
             onClick={handlePreview}
             disabled={!importData.trim()}
-            className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Preview
           </button>
           <button
             onClick={handleImport}
             disabled={preview.length === 0 || importing}
-            className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {importing ? 'Importing...' : 'Import Transactions'}
           </button>
@@ -296,70 +300,77 @@ export const PortfolioImport: React.FC = () => {
 
         {preview.length > 0 && (
           <div>
-            <h3 className="font-medium text-gray-900 mb-3">
+            <h3 className="font-medium text-[var(--text-primary)] mb-3">
               Preview ({preview.length} transactions):
             </h3>
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 text-sm">
-                <thead className="bg-gray-50">
+            <div className="border border-[var(--border-color)] rounded-lg overflow-hidden">
+              <table className="min-w-full divide-y divide-[var(--border-color)] text-sm">
+                <thead className="bg-[var(--hover-bg)]">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">
+                    <th className="px-4 py-2 text-left text-xs font-medium text-[var(--text-secondary)]">
                       Date
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">
+                    <th className="px-4 py-2 text-left text-xs font-medium text-[var(--text-secondary)]">
                       Type
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">
+                    <th className="px-4 py-2 text-left text-xs font-medium text-[var(--text-secondary)]">
                       Coin
                     </th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">
+                    <th className="px-4 py-2 text-right text-xs font-medium text-[var(--text-secondary)]">
                       Amount
                     </th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">
+                    <th className="px-4 py-2 text-right text-xs font-medium text-[var(--text-secondary)]">
                       Price
                     </th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">
+                    <th className="px-4 py-2 text-right text-xs font-medium text-[var(--text-secondary)]">
                       Total
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-[var(--border-color)]">
                   {preview.map((tx, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-2">
+                    <tr
+                      key={index}
+                      className="hover:bg-[var(--hover-bg)] transition-colors"
+                    >
+                      <td className="px-4 py-2 text-[var(--text-primary)]">
                         {new Date(tx.date).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-2">
                         <span
                           className={`px-2 py-1 rounded text-xs ${
                             tx.type === 'buy'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-red-100 text-red-700'
+                              ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                              : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                           }`}
                         >
                           {tx.type.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-4 py-2 flex items-center gap-2">
-                        {tx.coinImage && (
-                          <img
-                            src={tx.coinImage}
-                            alt={tx.coinName}
-                            className="w-5 h-5"
-                          />
-                        )}
-                        <span>{tx.coinName}</span>
-                        <span className="text-gray-400 text-xs">
-                          {tx.coinSymbol.toUpperCase()}
-                        </span>
+                      <td className="px-4 py-2">
+                        <div className="flex items-center gap-2">
+                          {tx.coinImage && (
+                            <img
+                              src={tx.coinImage}
+                              alt={tx.coinName}
+                              className="w-5 h-5"
+                            />
+                          )}
+                          <span className="text-[var(--text-primary)]">
+                            {tx.coinName}
+                          </span>
+                          <span className="text-[var(--text-secondary)] text-xs">
+                            {tx.coinSymbol.toUpperCase()}
+                          </span>
+                        </div>
                       </td>
-                      <td className="px-4 py-2 text-right font-mono">
+                      <td className="px-4 py-2 text-right font-mono text-[var(--text-primary)]">
                         {tx.amount.toFixed(4)}
                       </td>
-                      <td className="px-4 py-2 text-right font-mono">
+                      <td className="px-4 py-2 text-right font-mono text-[var(--text-primary)]">
                         <FormatPrice value={tx.price} />
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-medium">
+                      <td className="px-4 py-2 text-right font-mono font-medium text-[var(--text-primary)]">
                         <FormatPrice value={tx.total} />
                       </td>
                     </tr>

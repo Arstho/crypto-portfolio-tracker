@@ -34,7 +34,11 @@ export function Table<T extends { id: string }>({
       <span className="ml-2 inline-flex">
         {isActive ? (
           sortConfig.direction === 'asc' ? (
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="w-4 h-4 text-[var(--text-primary)]"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path
                 fillRule="evenodd"
                 d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
@@ -42,7 +46,11 @@ export function Table<T extends { id: string }>({
               />
             </svg>
           ) : (
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="w-4 h-4 text-[var(--text-primary)]"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path
                 fillRule="evenodd"
                 d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -52,7 +60,7 @@ export function Table<T extends { id: string }>({
           )
         ) : (
           <svg
-            className="w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-[var(--text-secondary)]"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -68,9 +76,9 @@ export function Table<T extends { id: string }>({
   };
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-xs">
-      <table className="min-w-full divide-y divide-gray-200 bg-white">
-        <thead className="bg-gray-50">
+    <div className="overflow-x-auto rounded-lg border border-[var(--border-color)] shadow-xs">
+      <table className="min-w-full divide-y divide-[var(--border-color)] bg-[var(--bg-card)]">
+        <thead className="bg-[var(--hover-bg)]">
           <tr>
             {columns.map((column) => (
               <th
@@ -79,9 +87,9 @@ export function Table<T extends { id: string }>({
                   column.sortable && onSort?.(column.key as keyof T)
                 }
                 className={`
-    px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
-    ${column.sortable ? 'cursor-pointer hover:bg-gray-100 select-none' : ''}
-  `}
+                  px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider
+                  ${column.sortable ? 'cursor-pointer hover:bg-[var(--border-color)] select-none' : ''}
+                `}
                 title={column.sortable ? `Sort by ${column.header}` : undefined}
               >
                 <div className="flex items-center">
@@ -92,21 +100,21 @@ export function Table<T extends { id: string }>({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="divide-y divide-[var(--border-color)]">
           {data.map((item) => (
             <tr
               key={item.id}
               onClick={() => onRowClick?.(item)}
               className={
                 onRowClick
-                  ? 'cursor-pointer hover:bg-gray-50 transition-colors'
+                  ? 'cursor-pointer hover:bg-[var(--hover-bg)] transition-colors'
                   : ''
               }
             >
               {columns.map((column) => (
                 <td
                   key={String(column.key)}
-                  className="px-6 py-4 whitespace-nowrap text-sm"
+                  className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-primary)]"
                 >
                   {column.render
                     ? column.render(item)

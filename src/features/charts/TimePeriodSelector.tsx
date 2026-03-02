@@ -20,15 +20,15 @@ export const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
   onChange,
 }) => {
   return (
-    <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+    <div className="flex gap-2 bg-[var(--bg-primary)] p-1 rounded-lg border border-[var(--border-color)]">
       {periods.map((period) => (
         <button
           key={period.value}
           onClick={() => onChange(period.value)}
-          className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+          className={`px-3 py-1 text-sm font-medium rounded-md transition-all duration-200 ${
             selected === period.value
-              ? 'bg-white text-blue-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-[var(--bg-card)] text-blue-500 shadow-sm border border-[var(--border-color)]'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)]'
           }`}
         >
           {period.label}

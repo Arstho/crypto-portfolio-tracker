@@ -59,24 +59,28 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Buy ${coin.name}`}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+        <div className="flex items-center gap-3 p-3 bg-[var(--hover-bg)] rounded-lg">
           <img src={coin.image} alt={coin.name} className="w-10 h-10" />
           <div>
-            <div className="font-medium text-gray-900">{coin.name}</div>
-            <div className="text-sm text-gray-500">
+            <div className="font-medium text-[var(--text-primary)]">
+              {coin.name}
+            </div>
+            <div className="text-sm text-[var(--text-secondary)]">
               {coin.symbol.toUpperCase()}
             </div>
           </div>
           <div className="ml-auto text-right">
-            <div className="font-semibold">
+            <div className="font-semibold text-[var(--text-primary)]">
               <FormatPrice value={coin.current_price} />
             </div>
-            <div className="text-sm text-gray-500">Current price</div>
+            <div className="text-sm text-[var(--text-secondary)]">
+              Current price
+            </div>
           </div>
         </div>
 
         {error && (
-          <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+          <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-200">
             {error}
             <button
               type="button"
@@ -89,7 +93,7 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Amount <span className="text-red-500">*</span>
           </label>
           <div className="relative">
@@ -100,21 +104,23 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
               step="any"
               min="0"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="0.00"
             />
-            <span className="absolute right-3 top-2 text-gray-500">
+            <span className="absolute right-3 top-2 text-[var(--text-secondary)]">
               {coin.symbol.toUpperCase()}
             </span>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Purchase Price (USD) <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-2 text-gray-500">$</span>
+            <span className="absolute left-3 top-2 text-[var(--text-secondary)]">
+              $
+            </span>
             <input
               type="number"
               value={purchasePrice}
@@ -122,49 +128,53 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
               step="any"
               min="0"
               required
-              className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-8 pr-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="0.00"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Purchase Date
           </label>
           <input
             type="date"
             value={purchaseDate}
             onChange={(e) => setPurchaseDate(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
             Notes (Optional)
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)] placeholder-[var(--text-secondary)]"
             placeholder="Add any notes about this purchase..."
           />
         </div>
 
         <div className="min-h-[80px]">
           {amount && purchasePrice ? (
-            <div className="p-3 bg-blue-50 rounded-lg">
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
               <div className="text-sm text-blue-600 mb-1">Total Spent:</div>
               <div className="text-xl font-bold text-blue-700">
                 <FormatPrice value={totalSpent} />
               </div>
             </div>
           ) : (
-            <div className="p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-              <div className="text-sm text-gray-400 mb-1">Total Spent:</div>
-              <div className="text-xl font-bold text-gray-300">$0.00</div>
+            <div className="p-3 bg-[var(--hover-bg)] rounded-lg border border-dashed border-[var(--border-color)]">
+              <div className="text-sm text-[var(--text-secondary)] mb-1">
+                Total Spent:
+              </div>
+              <div className="text-xl font-bold text-[var(--text-secondary)] opacity-50">
+                $0.00
+              </div>
             </div>
           )}
         </div>
@@ -173,7 +183,7 @@ export const AddToPortfolioModal: React.FC<AddToPortfolioModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex-1 px-4 py-2 border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] hover:bg-[var(--hover-bg)] transition-colors"
           >
             Cancel
           </button>

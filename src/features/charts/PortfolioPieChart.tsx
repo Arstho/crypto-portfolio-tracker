@@ -55,12 +55,14 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
   if (active && payload && payload.length > 0) {
     const data = payload[0].payload;
     return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-        <p className="font-semibold text-gray-900">{data.coinName}</p>
-        <p className="text-gray-600">
+      <div className="bg-[var(--bg-card)] p-3 border border-[var(--border-color)] rounded-lg shadow-lg">
+        <p className="font-semibold text-[var(--text-primary)]">
+          {data.coinName}
+        </p>
+        <p className="text-[var(--text-secondary)]">
           Value: <FormatPrice value={data.value} />
         </p>
-        <p className="text-gray-600">
+        <p className="text-[var(--text-secondary)]">
           Allocation: {data.percentage.toFixed(2)}%
         </p>
       </div>
@@ -81,8 +83,10 @@ const renderLegend = (props: any) => {
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: entry.color }}
           />
-          <span className="text-gray-600">{entry.payload.coinName}</span>
-          <span className="font-semibold text-gray-900">
+          <span className="text-[var(--text-secondary)]">
+            {entry.payload.coinName}
+          </span>
+          <span className="font-semibold text-[var(--text-primary)]">
             {entry.payload.percentage.toFixed(1)}%
           </span>
         </li>
@@ -130,8 +134,8 @@ export const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({
 
   if (!data || data.length === 0) {
     return (
-      <div className="h-[400px] flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-        <p className="text-gray-400">No assets to display</p>
+      <div className="h-[400px] flex items-center justify-center bg-[var(--bg-card)] rounded-lg border-2 border-dashed border-[var(--border-color)]">
+        <p className="text-[var(--text-secondary)]">No assets to display</p>
       </div>
     );
   }
@@ -147,8 +151,8 @@ export const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+    <div className="card p-6">
+      <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
         Portfolio Distribution
       </h2>
 
@@ -173,7 +177,9 @@ export const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
-                  stroke={activeIndex === index ? '#1f2937' : 'none'}
+                  stroke={
+                    activeIndex === index ? 'var(--text-primary)' : 'none'
+                  }
                   strokeWidth={2}
                 />
               ))}
@@ -186,17 +192,21 @@ export const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({
         </ResponsiveContainer>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-gray-200">
+      <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-[var(--border-color)]">
         <div>
-          <div className="text-sm text-gray-500">Total Assets</div>
-          <div className="text-2xl font-bold text-gray-900">{data.length}</div>
+          <div className="text-sm text-[var(--text-secondary)]">
+            Total Assets
+          </div>
+          <div className="text-2xl font-bold text-[var(--text-primary)]">
+            {data.length}
+          </div>
         </div>
         <div>
-          <div className="text-sm text-gray-500">Most Held</div>
-          <div className="text-2xl font-bold text-gray-900">
+          <div className="text-sm text-[var(--text-secondary)]">Most Held</div>
+          <div className="text-2xl font-bold text-[var(--text-primary)]">
             {sortedData[0]?.coinName || '-'}
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-[var(--text-secondary)]">
             {sortedData[0]?.percentage.toFixed(2)}%
           </div>
         </div>

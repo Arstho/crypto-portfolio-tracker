@@ -78,7 +78,9 @@ export const HomePage: React.FC = () => {
       header: '#',
       sortable: true,
       render: (coin: Coin) => (
-        <span className="text-gray-500">{coin.market_cap_rank}</span>
+        <span className="text-[var(--text-secondary)]">
+          {coin.market_cap_rank}
+        </span>
       ),
     },
     {
@@ -89,8 +91,10 @@ export const HomePage: React.FC = () => {
         <div className="flex items-center gap-3">
           <img src={coin.image} alt={coin.name} className="w-8 h-8" />
           <div>
-            <div className="font-medium text-gray-900">{coin.name}</div>
-            <div className="text-gray-500 text-sm">
+            <div className="font-medium text-[var(--text-primary)]">
+              {coin.name}
+            </div>
+            <div className="text-[var(--text-secondary)] text-sm">
               {coin.symbol.toUpperCase()}
             </div>
           </div>
@@ -154,10 +158,10 @@ export const HomePage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">
             Cryptocurrency Market
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             Click on any row to view detailed information
           </p>
         </div>
@@ -182,10 +186,10 @@ export const HomePage: React.FC = () => {
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-2"
+          className="px-4 py-2 border border-[var(--border-color)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--hover-bg)] transition-colors flex items-center gap-2 text-[var(--text-primary)]"
         >
           <svg
-            className="w-4 h-4"
+            className="w-4 h-4 text-[var(--text-secondary)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -199,15 +203,17 @@ export const HomePage: React.FC = () => {
           </svg>
           Previous
         </button>
-        <span className="text-gray-600 font-medium">Page {page}</span>
+        <span className="text-[var(--text-secondary)] font-medium">
+          Page {page}
+        </span>
         <button
           onClick={() => setPage((p) => p + 1)}
           disabled={!coins || coins.length < 20}
-          className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-2"
+          className="px-4 py-2 border border-[var(--border-color)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--hover-bg)] transition-colors flex items-center gap-2 text-[var(--text-primary)]"
         >
           Next
           <svg
-            className="w-4 h-4"
+            className="w-4 h-4 text-[var(--text-secondary)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

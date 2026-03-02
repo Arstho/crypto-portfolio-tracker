@@ -36,10 +36,10 @@ export const SearchInput: React.FC<SearchInputProps> = ({
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full pl-10 pr-4 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-primary)] placeholder-[var(--text-secondary)] transition-colors"
       />
       <svg
-        className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+        className="absolute left-3 top-2.5 h-5 w-5 text-[var(--text-secondary)]"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

@@ -138,37 +138,37 @@ export const PortfolioPage: React.FC = () => {
       <div className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white rounded-xl shadow-sm p-6">
+            <div key={i} className="card p-6">
               <Skeleton className="h-4 w-24 mb-2" />
               <Skeleton className="h-8 w-32" />
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <Skeleton className="h-6 w-48 mb-4" />
           <Skeleton className="h-16 w-full mb-2" />
           <Skeleton className="h-16 w-full" />
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <Skeleton className="h-6 w-48 mb-4" />
           <div className="h-[400px] flex items-center justify-center">
             <Skeleton className="w-[300px] h-[300px] rounded-full" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <Skeleton className="h-6 w-48 mb-4" />
           <Skeleton className="h-[400px] w-full" />
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <Skeleton className="h-6 w-40 mb-4" />
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="flex items-center gap-4 py-4 border-b last:border-0"
+              className="flex items-center gap-4 py-4 border-b border-[var(--border-color)] last:border-0"
             >
               <Skeleton className="h-12 w-12 rounded-full" />
               <div className="flex-1 space-y-2">
@@ -186,9 +186,9 @@ export const PortfolioPage: React.FC = () => {
   if (itemsWithPrices.length === 0) {
     return (
       <div className="text-center py-16">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[var(--bg-card)] mb-4 border border-[var(--border-color)]">
           <svg
-            className="w-10 h-10 text-gray-400"
+            className="w-10 h-10 text-[var(--text-secondary)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -201,16 +201,13 @@ export const PortfolioPage: React.FC = () => {
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
           Your portfolio is empty
         </h2>
-        <p className="text-gray-500 mb-6">
+        <p className="text-[var(--text-secondary)] mb-6">
           Start by adding some cryptocurrencies to your portfolio
         </p>
-        <a
-          href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-        >
+        <a href="/" className="btn-primary inline-flex items-center gap-2">
           <svg
             className="w-5 h-5"
             fill="none"
@@ -241,7 +238,9 @@ export const PortfolioPage: React.FC = () => {
       )}
 
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">My Portfolio</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">
+          My Portfolio
+        </h1>
         <div className="flex gap-2">
           <PortfolioExport
             transactions={transactions}
@@ -253,7 +252,7 @@ export const PortfolioPage: React.FC = () => {
               await clearAll();
               showNotification('Portfolio cleared successfully', 'success');
             }}
-            className="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+            className="px-4 py-2 text-red-500 border border-red-300 dark:border-red-800 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           >
             Clear Portfolio
           </button>
@@ -261,22 +260,28 @@ export const PortfolioPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="text-sm text-gray-500 mb-1">Total Invested</div>
-          <div className="text-2xl font-bold text-gray-900">
+        <div className="card p-6">
+          <div className="text-sm text-[var(--text-secondary)] mb-1">
+            Total Invested
+          </div>
+          <div className="text-2xl font-bold text-[var(--text-primary)]">
             <FormatPrice value={stats.totalInvested} />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="text-sm text-gray-500 mb-1">Current Value</div>
-          <div className="text-2xl font-bold text-gray-900">
+        <div className="card p-6">
+          <div className="text-sm text-[var(--text-secondary)] mb-1">
+            Current Value
+          </div>
+          <div className="text-2xl font-bold text-[var(--text-primary)]">
             <FormatPrice value={stats.totalCurrentValue} />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="text-sm text-gray-500 mb-1">Total Profit/Loss</div>
+        <div className="card p-6">
+          <div className="text-sm text-[var(--text-secondary)] mb-1">
+            Total Profit/Loss
+          </div>
           <div
             className={`text-2xl font-bold ${
               stats.totalProfitLoss >= 0 ? 'text-green-500' : 'text-red-500'
@@ -289,17 +294,19 @@ export const PortfolioPage: React.FC = () => {
               {stats.totalProfitLossPercentage.toFixed(2)}%)
             </span>
           </div>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-[var(--text-secondary)] mt-1">
             Realized: <FormatPrice value={Math.abs(stats.realizedProfitLoss)} />
             {stats.realizedProfitLoss >= 0 ? ' profit' : ' loss'}
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="text-sm text-gray-500 mb-1">Best Performer</div>
+        <div className="card p-6">
+          <div className="text-sm text-[var(--text-secondary)] mb-1">
+            Best Performer
+          </div>
           {stats.topPerformer ? (
             <>
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="text-lg font-semibold text-[var(--text-primary)]">
                 {stats.topPerformer.coinName}
               </div>
               <div className="text-green-500 font-medium">
@@ -307,7 +314,7 @@ export const PortfolioPage: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="text-gray-400">No data</div>
+            <div className="text-[var(--text-secondary)]">No data</div>
           )}
         </div>
       </div>
@@ -341,20 +348,20 @@ export const PortfolioPage: React.FC = () => {
         onSearchChange={setSearchTerm}
       />
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
+      <div className="card overflow-hidden">
+        <div className="px-6 py-4 border-b border-[var(--border-color)]">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             Your Assets{' '}
             {filteredAndSortedItems.length !== itemsWithPrices.length &&
               `(${filteredAndSortedItems.length} of ${itemsWithPrices.length})`}
           </h2>
         </div>
 
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-[var(--border-color)]">
           {filteredAndSortedItems.map((item) => (
             <div
               key={item.coinId}
-              className="p-6 hover:bg-gray-50 transition-colors"
+              className="p-6 hover:bg-[var(--hover-bg)] transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
@@ -364,10 +371,10 @@ export const PortfolioPage: React.FC = () => {
                     className="w-12 h-12"
                   />
                   <div>
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-[var(--text-primary)]">
                       {item.coinName}
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-[var(--text-secondary)]">
                       {item.coinSymbol.toUpperCase()}
                     </p>
                   </div>
@@ -385,47 +392,57 @@ export const PortfolioPage: React.FC = () => {
 
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
                 <div>
-                  <div className="text-xs text-gray-500">Amount</div>
-                  <div className="font-medium">
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Amount
+                  </div>
+                  <div className="font-medium text-[var(--text-primary)]">
                     {item.totalAmount.toFixed(4)}{' '}
                     {item.coinSymbol.toUpperCase()}
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-xs text-gray-500">Avg. Buy Price</div>
-                  <div className="font-medium">
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Avg. Buy Price
+                  </div>
+                  <div className="font-medium text-[var(--text-primary)]">
                     <FormatPrice value={item.avgBuyPrice} />
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-xs text-gray-500">Current Price</div>
-                  <div className="font-medium">
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Current Price
+                  </div>
+                  <div className="font-medium text-[var(--text-primary)]">
                     <FormatPrice value={item.currentPrice} />
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-xs text-gray-500">Total Value</div>
-                  <div className="font-medium">
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Total Value
+                  </div>
+                  <div className="font-medium text-[var(--text-primary)]">
                     <FormatPrice value={item.currentValue} />
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-xs text-gray-500">Profit/Loss</div>
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Profit/Loss
+                  </div>
                   <PriceChange value={item.profitLossPercentage} />
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-[var(--text-secondary)]">
                     <FormatPrice value={Math.abs(item.profitLoss)} />
                   </div>
                 </div>
               </div>
 
               {item.transactions.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
                   <details>
-                    <summary className="text-sm text-gray-500 cursor-pointer hover:text-gray-700">
+                    <summary className="text-sm text-[var(--text-secondary)] cursor-pointer hover:text-[var(--text-primary)]">
                       Transaction History ({item.transactions.length})
                     </summary>
                     <div className="mt-2 space-y-2">
@@ -438,30 +455,30 @@ export const PortfolioPage: React.FC = () => {
                         .map((t) => (
                           <div
                             key={t.id}
-                            className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded"
+                            className="flex items-center justify-between text-sm p-2 bg-[var(--hover-bg)] rounded"
                           >
                             <div className="flex items-center gap-2">
                               <span
                                 className={`px-2 py-0.5 rounded text-xs ${
                                   t.type === 'buy'
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-red-100 text-red-700'
+                                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                                    : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                 }`}
                               >
                                 {t.type.toUpperCase()}
                               </span>
-                              <span>
+                              <span className="text-[var(--text-secondary)]">
                                 {new Date(t.date).toLocaleDateString()}
                               </span>
-                              <span>
+                              <span className="text-[var(--text-primary)]">
                                 {t.amount} {item.coinSymbol.toUpperCase()}
                               </span>
-                              <span>
+                              <span className="text-[var(--text-secondary)]">
                                 @ <FormatPrice value={t.price} />
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">
+                              <span className="font-medium text-[var(--text-primary)]">
                                 <FormatPrice value={t.total} />
                               </span>
                               <button
@@ -472,7 +489,7 @@ export const PortfolioPage: React.FC = () => {
                                     'info'
                                   );
                                 }}
-                                className="text-gray-400 hover:text-red-500"
+                                className="text-[var(--text-secondary)] hover:text-red-500"
                                 title="Delete transaction"
                               >
                                 <svg
@@ -501,7 +518,9 @@ export const PortfolioPage: React.FC = () => {
 
           {filteredAndSortedItems.length === 0 && (
             <div className="p-12 text-center">
-              <p className="text-gray-400">No assets match your filters</p>
+              <p className="text-[var(--text-secondary)]">
+                No assets match your filters
+              </p>
             </div>
           )}
         </div>

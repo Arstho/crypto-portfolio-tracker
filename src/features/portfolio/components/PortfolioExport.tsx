@@ -48,7 +48,7 @@ export const PortfolioExport: React.FC<PortfolioExportProps> = ({
         const buys = item.transactions.filter((t) => t.type === 'buy');
         const totalSpent = buys.reduce((sum, t) => sum + t.total, 0);
         const avgPrice = totalSpent / item.totalAmount;
-        const currentPrice = item.transactions[0]?.price || 0; // В реальности нужно брать текущую цену из API
+        const currentPrice = item.transactions[0]?.price || 0;
         const currentValue = item.totalAmount * currentPrice;
         const profitLoss = currentValue - totalSpent;
         const profitLossPercentage =
@@ -136,42 +136,42 @@ export const PortfolioExport: React.FC<PortfolioExportProps> = ({
       </button>
 
       {showExportMenu && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 z-10">
+        <div className="absolute right-0 mt-2 w-64 bg-[var(--bg-card)] rounded-xl shadow-lg border border-[var(--border-color)] z-10">
           <div className="p-2">
-            <div className="px-4 py-2 text-sm font-semibold text-gray-700 border-b border-gray-200">
+            <div className="px-4 py-2 text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)]">
               Export as CSV
             </div>
             <button
               onClick={() => generateCSV('transactions')}
-              className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+              className="w-full text-left px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-bg)] rounded-lg transition-colors"
             >
               📄 Transactions only
             </button>
             <button
               onClick={() => generateCSV('holdings')}
-              className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+              className="w-full text-left px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-bg)] rounded-lg transition-colors"
             >
               📊 Current holdings
             </button>
             <button
               onClick={() => generateCSV('full')}
-              className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+              className="w-full text-left px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-bg)] rounded-lg transition-colors"
             >
               📑 Full report (both)
             </button>
 
-            <div className="border-t border-gray-200 my-2" />
+            <div className="border-t border-[var(--border-color)] my-2" />
 
             <button
               onClick={generateJSON}
-              className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+              className="w-full text-left px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-bg)] rounded-lg transition-colors"
             >
               🔧 Export as JSON
             </button>
 
             <button
               onClick={generatePDF}
-              className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+              className="w-full text-left px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-bg)] rounded-lg transition-colors"
             >
               🖨️ Print / PDF
             </button>

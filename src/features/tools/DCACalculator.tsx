@@ -49,12 +49,12 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
     const value = payload.find((p) => p.dataKey === 'value')?.value || 0;
 
     return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-        <p className="text-gray-600 mb-1">{label}</p>
-        <p className="text-gray-600">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg p-3">
+        <p className="text-[var(--text-secondary)] mb-1">{label}</p>
+        <p className="text-[var(--text-secondary)]">
           Invested: <FormatPrice value={invested} />
         </p>
-        <p className="text-gray-600">
+        <p className="text-[var(--text-secondary)]">
           Value: <FormatPrice value={value} />
         </p>
         <p
@@ -130,61 +130,61 @@ export const DCACalculator: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+    <div className="card p-6">
+      <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
         📊 DCA Calculator (Dollar Cost Averaging)
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Current Coin Price ($)
             </label>
             <input
               type="number"
               value={coinPrice}
               onChange={(e) => setCoinPrice(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="50000"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Monthly Investment ($)
             </label>
             <input
               type="number"
               value={monthlyAmount}
               onChange={(e) => setMonthlyAmount(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="1000"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Investment Period (months)
             </label>
             <input
               type="number"
               value={months}
               onChange={(e) => setMonths(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="12"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Expected Annual Growth (%)
             </label>
             <input
               type="number"
               value={priceGrowth}
               onChange={(e) => setPriceGrowth(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="10"
             />
           </div>
@@ -200,36 +200,46 @@ export const DCACalculator: React.FC = () => {
         {result && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-500">Total Invested</div>
-                <div className="text-xl font-bold text-gray-900">
+              <div className="p-4 bg-[var(--bg-primary)] rounded-lg">
+                <div className="text-sm text-[var(--text-secondary)]">
+                  Total Invested
+                </div>
+                <div className="text-xl font-bold text-[var(--text-primary)]">
                   <FormatPrice value={result.totalInvested} />
                 </div>
               </div>
 
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-500">Final Value</div>
-                <div className="text-xl font-bold text-gray-900">
+              <div className="p-4 bg-[var(--bg-primary)] rounded-lg">
+                <div className="text-sm text-[var(--text-secondary)]">
+                  Final Value
+                </div>
+                <div className="text-xl font-bold text-[var(--text-primary)]">
                   <FormatPrice value={result.currentValue} />
                 </div>
               </div>
 
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-500">Total Coins</div>
-                <div className="text-xl font-bold text-gray-900">
+              <div className="p-4 bg-[var(--bg-primary)] rounded-lg">
+                <div className="text-sm text-[var(--text-secondary)]">
+                  Total Coins
+                </div>
+                <div className="text-xl font-bold text-[var(--text-primary)]">
                   {result.totalCoins.toFixed(4)}
                 </div>
               </div>
 
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-500">Avg. Price</div>
-                <div className="text-xl font-bold text-gray-900">
+              <div className="p-4 bg-[var(--bg-primary)] rounded-lg">
+                <div className="text-sm text-[var(--text-secondary)]">
+                  Avg. Price
+                </div>
+                <div className="text-xl font-bold text-[var(--text-primary)]">
                   <FormatPrice value={result.averagePrice} />
                 </div>
               </div>
 
-              <div className="p-4 bg-gray-50 rounded-lg col-span-2">
-                <div className="text-sm text-gray-500">Profit/Loss</div>
+              <div className="p-4 bg-[var(--bg-primary)] rounded-lg col-span-2">
+                <div className="text-sm text-[var(--text-secondary)]">
+                  Profit/Loss
+                </div>
                 <div
                   className={`text-2xl font-bold ${
                     result.profitLoss >= 0 ? 'text-green-500' : 'text-red-500'
@@ -247,14 +257,17 @@ export const DCACalculator: React.FC = () => {
             <div className="h-[200px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={result.simulations}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="var(--border-color)"
+                  />
                   <XAxis
                     dataKey="date"
-                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                    tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
                   />
                   <YAxis
                     tickFormatter={formatYAxis}
-                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                    tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Line
@@ -280,11 +293,15 @@ export const DCACalculator: React.FC = () => {
             <div className="flex gap-6 justify-center text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-500 rounded-full" />
-                <span className="text-gray-600">Portfolio Value</span>
+                <span className="text-[var(--text-secondary)]">
+                  Portfolio Value
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-gray-500 rounded-full" />
-                <span className="text-gray-600">Total Invested</span>
+                <span className="text-[var(--text-secondary)]">
+                  Total Invested
+                </span>
               </div>
             </div>
           </div>

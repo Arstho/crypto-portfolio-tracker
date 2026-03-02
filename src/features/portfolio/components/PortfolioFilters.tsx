@@ -28,7 +28,7 @@ export const PortfolioFilters: React.FC<PortfolioFiltersProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4">
+    <div className="card p-4">
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <div className="relative">
@@ -37,10 +37,10 @@ export const PortfolioFilters: React.FC<PortfolioFiltersProps> = ({
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search by coin name..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-primary)] placeholder-[var(--text-secondary)]"
             />
             <svg
-              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+              className="absolute left-3 top-2.5 h-5 w-5 text-[var(--text-secondary)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -55,13 +55,13 @@ export const PortfolioFilters: React.FC<PortfolioFiltersProps> = ({
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => onSortChange('name')}
             className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-1 ${
               sortField === 'name'
                 ? 'bg-blue-500 text-white border-blue-500'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                : 'btn-secondary'
             }`}
           >
             Name {getSortIcon('name')}
@@ -72,7 +72,7 @@ export const PortfolioFilters: React.FC<PortfolioFiltersProps> = ({
             className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-1 ${
               sortField === 'value'
                 ? 'bg-blue-500 text-white border-blue-500'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                : 'btn-secondary'
             }`}
           >
             Value {getSortIcon('value')}
@@ -83,7 +83,7 @@ export const PortfolioFilters: React.FC<PortfolioFiltersProps> = ({
             className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-1 ${
               sortField === 'profit'
                 ? 'bg-blue-500 text-white border-blue-500'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                : 'btn-secondary'
             }`}
           >
             Profit {getSortIcon('profit')}
@@ -94,7 +94,7 @@ export const PortfolioFilters: React.FC<PortfolioFiltersProps> = ({
             className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-1 ${
               sortField === 'amount'
                 ? 'bg-blue-500 text-white border-blue-500'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                : 'btn-secondary'
             }`}
           >
             Amount {getSortIcon('amount')}
@@ -105,7 +105,7 @@ export const PortfolioFilters: React.FC<PortfolioFiltersProps> = ({
             className={`px-4 py-2 rounded-lg border transition-colors ${
               showProfitableOnly
                 ? 'bg-green-500 text-white border-green-500'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                : 'btn-secondary'
             }`}
           >
             {showProfitableOnly ? 'Profitable ✓' : 'Show Profitable'}

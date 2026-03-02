@@ -36,9 +36,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
 }) => {
   if (active && payload && payload.length > 0) {
     return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-        <p className="text-gray-600 mb-1">{label}</p>
-        <p className="font-semibold text-gray-900">
+      <div className="bg-[var(--bg-card)] p-3 border border-[var(--border-color)] rounded-lg shadow-lg">
+        <p className="text-[var(--text-secondary)] mb-1">{label}</p>
+        <p className="font-semibold text-[var(--text-primary)]">
           Price: <FormatPrice value={payload[0].value} />
         </p>
       </div>
@@ -53,8 +53,8 @@ export const PriceChart: React.FC<PriceChartProps> = ({
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className="h-[400px] flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-        <p className="text-gray-400">No chart data available</p>
+      <div className="h-[400px] flex items-center justify-center bg-[var(--bg-card)] rounded-lg border-2 border-dashed border-[var(--border-color)]">
+        <p className="text-[var(--text-secondary)]">No chart data available</p>
       </div>
     );
   }
@@ -94,27 +94,27 @@ export const PriceChart: React.FC<PriceChartProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+      <div className="grid grid-cols-3 gap-4 p-4 bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)]">
         <div>
-          <div className="text-sm text-gray-500">From</div>
-          <div className="font-semibold">
+          <div className="text-sm text-[var(--text-secondary)]">From</div>
+          <div className="font-semibold text-[var(--text-primary)]">
             <FormatPrice value={minPrice} />
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-[var(--text-secondary)] opacity-75">
             {new Date(data[0][0]).toLocaleDateString()}
           </div>
         </div>
         <div>
-          <div className="text-sm text-gray-500">To</div>
-          <div className="font-semibold">
+          <div className="text-sm text-[var(--text-secondary)]">To</div>
+          <div className="font-semibold text-[var(--text-primary)]">
             <FormatPrice value={maxPrice} />
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-[var(--text-secondary)] opacity-75">
             {new Date(data[data.length - 1][0]).toLocaleDateString()}
           </div>
         </div>
         <div>
-          <div className="text-sm text-gray-500">Change</div>
+          <div className="text-sm text-[var(--text-secondary)]">Change</div>
           <div
             className={`font-semibold ${
               isPositive ? 'text-green-500' : 'text-red-500'
@@ -123,7 +123,7 @@ export const PriceChart: React.FC<PriceChartProps> = ({
             {isPositive ? '+' : ''}
             {priceChange.toFixed(2)}%
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-[var(--text-secondary)] opacity-75">
             {isPositive ? '▲' : '▼'} over period
           </div>
         </div>
@@ -145,22 +145,22 @@ export const PriceChart: React.FC<PriceChartProps> = ({
               </linearGradient>
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
 
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              tickLine={false}
-              axisLine={{ stroke: '#e5e7eb' }}
+              tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
+              tickLine={{ stroke: 'var(--border-color)' }}
+              axisLine={{ stroke: 'var(--border-color)' }}
               interval="preserveStartEnd"
               minTickGap={50}
             />
 
             <YAxis
               tickFormatter={formatYAxis}
-              tick={{ fontSize: 12, fill: '#6b7280' }}
-              tickLine={false}
-              axisLine={{ stroke: '#e5e7eb' }}
+              tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
+              tickLine={{ stroke: 'var(--border-color)' }}
+              axisLine={{ stroke: 'var(--border-color)' }}
               domain={[yDomainMin, yDomainMax]}
               width={80}
             />

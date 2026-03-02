@@ -38,7 +38,7 @@ export const CoinDetailsPage: React.FC = () => {
       <div className="space-y-8">
         <Skeleton className="h-5 w-24" />
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <div className="flex items-center gap-6">
             <Skeleton className="h-16 w-16 rounded-full" />
             <div className="space-y-2">
@@ -52,7 +52,7 @@ export const CoinDetailsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <Skeleton className="h-8 w-32 mb-4" />
           <Skeleton className="h-[400px] w-full" />
         </div>
@@ -73,7 +73,7 @@ export const CoinDetailsPage: React.FC = () => {
     <div className="space-y-8">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+        className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
       >
         <svg
           className="w-5 h-5"
@@ -91,17 +91,19 @@ export const CoinDetailsPage: React.FC = () => {
         Back to market
       </button>
 
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="card p-6">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex items-center gap-4">
             <img src={coin.image} alt={coin.name} className="w-16 h-16" />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{coin.name}</h1>
+              <h1 className="text-3xl font-bold text-[var(--text-primary)]">
+                {coin.name}
+              </h1>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-gray-500 text-lg">
+                <span className="text-[var(--text-secondary)] text-lg">
                   {coin.symbol.toUpperCase()}
                 </span>
-                <span className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded">
+                <span className="px-2 py-1 bg-[var(--hover-bg)] text-[var(--text-secondary)] text-sm rounded border border-[var(--border-color)]">
                   Rank #{coin.market_cap_rank}
                 </span>
               </div>
@@ -109,18 +111,18 @@ export const CoinDetailsPage: React.FC = () => {
           </div>
 
           <div className="flex-1">
-            <div className="text-4xl font-bold text-gray-900">
+            <div className="text-4xl font-bold text-[var(--text-primary)]">
               <FormatPrice value={coin.current_price} />
             </div>
             <div className="flex items-center gap-4 mt-2">
               <PriceChange value={coin.price_change_percentage_24h} />
-              <span className="text-gray-500">24h</span>
+              <span className="text-[var(--text-secondary)]">24h</span>
             </div>
           </div>
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+            className="btn-primary flex items-center gap-2"
           >
             <svg
               className="w-5 h-5"
@@ -140,9 +142,11 @@ export const CoinDetailsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="card p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Price Chart</h2>
+          <h2 className="text-xl font-semibold text-[var(--text-primary)]">
+            Price Chart
+          </h2>
           <TimePeriodSelector selected={period} onChange={setPeriod} />
         </div>
 
@@ -161,23 +165,27 @@ export const CoinDetailsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <div className="card p-6">
+          <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
             About {coin.name}
           </h2>
-          <p className="text-gray-600 leading-relaxed">{coin.description}</p>
+          <p className="text-[var(--text-secondary)] leading-relaxed">
+            {coin.description}
+          </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <div className="card p-6">
+          <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
             Statistics
           </h2>
 
           <div className="space-y-4">
-            <div className="flex justify-between py-2 border-b border-gray-100">
-              <span className="text-gray-500">All Time High</span>
+            <div className="flex justify-between py-2 border-b border-[var(--border-color)]">
+              <span className="text-[var(--text-secondary)]">
+                All Time High
+              </span>
               <div className="text-right">
-                <div className="font-semibold">
+                <div className="font-semibold text-[var(--text-primary)]">
                   <FormatPrice value={coin.ath} />
                 </div>
                 <div className="text-sm text-red-500">
@@ -186,38 +194,46 @@ export const CoinDetailsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-between py-2 border-b border-gray-100">
-              <span className="text-gray-500">All Time Low</span>
+            <div className="flex justify-between py-2 border-b border-[var(--border-color)]">
+              <span className="text-[var(--text-secondary)]">All Time Low</span>
               <div className="text-right">
-                <div className="font-semibold">
+                <div className="font-semibold text-[var(--text-primary)]">
                   <FormatPrice value={coin.atl} />
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-between py-2 border-b border-gray-100">
-              <span className="text-gray-500">Price Change (1h)</span>
+            <div className="flex justify-between py-2 border-b border-[var(--border-color)]">
+              <span className="text-[var(--text-secondary)]">
+                Price Change (1h)
+              </span>
               <PriceChange value={coin.price_change_percentage_1h} />
             </div>
 
-            <div className="flex justify-between py-2 border-b border-gray-100">
-              <span className="text-gray-500">Price Change (7d)</span>
+            <div className="flex justify-between py-2 border-b border-[var(--border-color)]">
+              <span className="text-[var(--text-secondary)]">
+                Price Change (7d)
+              </span>
               <PriceChange value={coin.price_change_percentage_7d} />
             </div>
 
-            <div className="flex justify-between py-2 border-b border-gray-100">
-              <span className="text-gray-500">Price Change (30d)</span>
+            <div className="flex justify-between py-2 border-b border-[var(--border-color)]">
+              <span className="text-[var(--text-secondary)]">
+                Price Change (30d)
+              </span>
               <PriceChange value={coin.price_change_percentage_30d} />
             </div>
 
-            <div className="flex justify-between py-2 border-b border-gray-100">
-              <span className="text-gray-500">Price Change (1y)</span>
+            <div className="flex justify-between py-2 border-b border-[var(--border-color)]">
+              <span className="text-[var(--text-secondary)]">
+                Price Change (1y)
+              </span>
               <PriceChange value={coin.price_change_percentage_1y} />
             </div>
 
             <div className="flex justify-between py-2">
-              <span className="text-gray-500">Total Supply</span>
-              <span className="font-semibold">
+              <span className="text-[var(--text-secondary)]">Total Supply</span>
+              <span className="font-semibold text-[var(--text-primary)]">
                 {coin.total_supply
                   ? coin.total_supply.toLocaleString()
                   : 'Unlimited'}
@@ -226,14 +242,16 @@ export const CoinDetailsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 md:col-span-2">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Links</h2>
+        <div className="card p-6 md:col-span-2">
+          <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
+            Links
+          </h2>
           <div className="flex flex-wrap gap-4">
             <a
               href={coin.homepage}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="btn-secondary flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h-2v-6h2v6zm0-8h-2V6h2v2z" />
@@ -245,7 +263,7 @@ export const CoinDetailsPage: React.FC = () => {
                 href={coin.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="btn-secondary flex items-center gap-2"
               >
                 <svg
                   className="w-5 h-5"

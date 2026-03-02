@@ -30,6 +30,13 @@ export const usePortfolio = () => {
   );
   const error = useAppSelector(selectPortfolioError);
 
+  const addTransactionDirectly = useCallback(
+    (transaction: Omit<Transaction, 'id' | 'total'>) => {
+      dispatch(addTransaction(transaction));
+    },
+    [dispatch]
+  );
+
   const buyCoin = useCallback(
     (
       coinId: string,
@@ -174,6 +181,7 @@ export const usePortfolio = () => {
     error,
     buyCoin,
     sellCoin,
+    addTransaction: addTransactionDirectly,
     removeTransaction: removeTransactionById,
     updateTransaction: updateTransactionById,
     clearAll,

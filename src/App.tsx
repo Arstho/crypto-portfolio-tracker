@@ -1,27 +1,48 @@
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
+import { useTheme } from './shared/context/ThemeContext';
 
 function App() {
+  const { theme } = useTheme();
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow sticky top-0 z-10">
+    <div
+      className="min-h-screen bg-[var(--bg-primary)] transition-colors duration-200"
+      data-theme={theme}
+    >
+      <header className="bg-[var(--bg-card)] border-b border-[var(--border-color)] shadow sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <Link
+              to="/"
+              className="text-2xl font-bold text-[var(--text-primary)] hover:text-[var(--text-secondary)] transition-colors"
+            >
               Crypto Portfolio Tracker
-            </h1>
+            </Link>
             <nav className="space-x-4">
-              <a href="/" className="text-gray-600 hover:text-gray-900">
+              <Link
+                to="/"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              >
                 Market
-              </a>
-              <a
-                href="/portfolio"
-                className="text-gray-600 hover:text-gray-900"
+              </Link>
+              <Link
+                to="/portfolio"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
               >
                 Portfolio
-              </a>
-              <a href="/tools" className="text-gray-600 hover:text-gray-900">
+              </Link>
+              <Link
+                to="/tools"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              >
                 Tools
-              </a>
+              </Link>
+              <Link
+                to="/settings"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                ⚙️ Settings
+              </Link>
             </nav>
           </div>
         </div>
