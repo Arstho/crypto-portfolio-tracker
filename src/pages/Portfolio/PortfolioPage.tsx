@@ -8,7 +8,7 @@ import {
   type SortField,
 } from '../../features/portfolio/components/PortfolioFilters';
 import { PortfolioGoals } from '../../features/portfolio/components/PortfolioGoals';
-import { SellCoinModal } from '../../features/portfolio/components/SellCoinModal';
+// import { SellCoinModal } from '../../features/portfolio/components/SellCoinModal';
 import { useGoals } from '../../features/portfolio/hooks/useGoals';
 import { usePortfolio } from '../../features/portfolio/hooks/usePortfolio';
 import { FormatPrice } from '../../shared/components/FormatPrice/FormatPrice';
@@ -27,9 +27,9 @@ export const PortfolioPage: React.FC = () => {
   } = usePortfolio();
   const { goals, addNewGoal, removeGoal, checkAndUpdateGoals } = useGoals();
 
-  const [selectedItem, setSelectedItem] = useState<
-    (typeof itemsWithPrices)[0] | null
-  >(null);
+  // const [selectedItem, setSelectedItem] = useState<
+  //   (typeof itemsWithPrices)[0] | null
+  // >(null);
   const [notification, setNotification] = useState<{
     message: string;
     type: 'success' | 'error' | 'info';
@@ -380,17 +380,17 @@ export const PortfolioPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <button
                     onClick={() => setSelectedItem(item)}
                     className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                   >
                     Sell
                   </button>
-                </div>
+                </div> */}
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4 text-center">
                 <div>
                   <div className="text-xs text-[var(--text-secondary)]">
                     Amount
@@ -526,7 +526,7 @@ export const PortfolioPage: React.FC = () => {
         </div>
       </div>
 
-      {selectedItem && (
+      {/* {selectedItem && (
         <SellCoinModal
           isOpen={!!selectedItem}
           onClose={() => setSelectedItem(null)}
@@ -538,7 +538,7 @@ export const PortfolioPage: React.FC = () => {
           avgBuyPrice={selectedItem.avgBuyPrice}
           currentPrice={selectedItem.currentPrice}
         />
-      )}
+      )} */}
     </div>
   );
 };

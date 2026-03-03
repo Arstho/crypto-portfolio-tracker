@@ -395,7 +395,7 @@ export const SettingsPage: React.FC = () => {
             <span className="text-2xl">📊</span> Statistics
           </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-sm text-[var(--text-secondary)]">
                 Total Transactions
@@ -416,12 +416,12 @@ export const SettingsPage: React.FC = () => {
                 {transactions.filter((t) => t.type === 'buy').length}
               </div>
             </div>
-            <div>
+            {/* <div>
               <div className="text-sm text-[var(--text-secondary)]">Sells</div>
               <div className="text-2xl font-bold text-red-500">
                 {transactions.filter((t) => t.type === 'sell').length}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

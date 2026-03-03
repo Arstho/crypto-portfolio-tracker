@@ -5,6 +5,7 @@ import { HomePage } from '../pages/Home/HomePage';
 import { PortfolioPage } from '../pages/Portfolio/PortfolioPage';
 import { SettingsPage } from '../pages/Settings/SettingsPage';
 import { ToolsPage } from '../pages/Tools/ToolsPage';
+import { PageTransition } from '../shared/components/PageTransition/PageTransition';
 
 export const router = createBrowserRouter([
   {
@@ -13,23 +14,43 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <PageTransition>
+            <HomePage />
+          </PageTransition>
+        ),
       },
       {
         path: '/coin/:id',
-        element: <CoinDetailsPage />,
+        element: (
+          <PageTransition>
+            <CoinDetailsPage />
+          </PageTransition>
+        ),
       },
       {
         path: '/portfolio',
-        element: <PortfolioPage />,
+        element: (
+          <PageTransition>
+            <PortfolioPage />
+          </PageTransition>
+        ),
       },
       {
         path: '/tools',
-        element: <ToolsPage />,
+        element: (
+          <PageTransition>
+            <ToolsPage />
+          </PageTransition>
+        ),
       },
       {
         path: '/settings',
-        element: <SettingsPage />,
+        element: (
+          <PageTransition>
+            <SettingsPage />
+          </PageTransition>
+        ),
       },
     ],
   },
